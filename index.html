@@ -5,8 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1e3a5f">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="MotoGanhos Pro">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>MotoGanhos Pro</title>
+<!-- PWA CORRIGIDO: manifest externo -->
+<link rel="manifest" href="/motoganhos/manifest.json">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -15,8 +19,6 @@
 .dark{--bg:#0d1b2a;--card:#1b2838;--text:#e2e8f0;--text-sub:#94a3b8;--border:#2d4a6e;--shadow:0 4px 20px rgba(0,0,0,.35);--shadow-h:0 8px 30px rgba(0,0,0,.5);}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;min-height:100vh;}
-
-/* HEADER */
 .app-header{background:linear-gradient(135deg,#1e3a5f 0%,#2d5a8e 55%,#1a6b5a 100%);padding:.85rem 1.25rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(0,0,0,.25);position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:.7rem;color:#fff;}
 .logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#00b894,#00cec9);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 4px 15px rgba(0,184,148,.4);}
@@ -25,10 +27,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);trans
 .hdr-right{display:flex;align-items:center;gap:.5rem;}
 .hdr-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);border:none;cursor:pointer;color:#fff;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:background .2s;}
 .hdr-btn:hover{background:rgba(255,255,255,.25);}
-.install-btn{display:none;padding:.35rem .75rem;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;font-size:.72rem;font-weight:600;cursor:pointer;}
-.install-btn.show{display:flex;align-items:center;gap:.35rem;}
-
-/* NAV DESKTOP */
+.install-btn{display:none;padding:.35rem .75rem;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;font-size:.72rem;font-weight:600;cursor:pointer;align-items:center;gap:.35rem;}
+.install-btn.show{display:flex;}
 .nav-wrap{background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.08);overflow-x:auto;scrollbar-width:none;position:sticky;top:62px;z-index:90;}
 .nav-wrap::-webkit-scrollbar{display:none;}
 .nav-tabs{display:flex;min-width:max-content;padding:0 .25rem;}
@@ -36,17 +36,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);trans
 .nav-tab i{font-size:1rem;}
 .nav-tab:hover{color:var(--primary-ll);}
 .nav-tab.active{color:var(--secondary);border-bottom-color:var(--secondary);background:rgba(0,184,148,.06);}
-
-/* BOTTOM NAV */
 .bnav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:2px solid var(--border);z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.12);padding-bottom:env(safe-area-inset-bottom,0);}
 .bnav-items{display:flex;justify-content:space-around;padding:.3rem 0;}
 .bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.45rem .2rem;cursor:pointer;color:var(--text-sub);font-size:.6rem;font-weight:600;text-transform:uppercase;border:none;background:transparent;transition:color .2s;-webkit-tap-highlight-color:transparent;user-select:none;position:relative;}
 .bnav-item i{font-size:1.2rem;transition:transform .2s;}
 .bnav-item.active{color:var(--secondary);}
 .bnav-item.active i{transform:translateY(-2px);}
-.bnav-badge{position:absolute;top:4px;right:22%;background:var(--danger);color:#fff;font-size:.5rem;font-weight:700;padding:.1rem .28rem;border-radius:100px;min-width:14px;text-align:center;}
-
-/* MORE SHEET */
 .more-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(2px);}
 .more-overlay.open{opacity:1;pointer-events:all;}
 .more-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-radius:22px 22px 0 0;z-index:301;padding:1rem 1rem calc(env(safe-area-inset-bottom,0px) + 1.5rem);transform:translateY(100%);pointer-events:none;transition:transform .35s cubic-bezier(.4,0,.2,1);max-height:80vh;overflow-y:auto;}
@@ -58,20 +53,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);trans
 .more-btn i{font-size:1.4rem;}
 .more-btn:active{transform:scale(.93);}
 .more-btn.active,.more-btn:hover{border-color:var(--secondary);color:var(--secondary);background:rgba(0,184,148,.07);}
-
 @media(max-width:640px){.nav-wrap{display:none!important;}.bnav{display:block;}.main{padding-bottom:5.5rem!important;}}
-
-/* SECTIONS */
 .section{display:none;}.section.active{display:block;}
 .main{max-width:900px;margin:0 auto;padding:1.35rem 1rem;}
-
-/* CARDS */
 .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
 .card-hdr{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.65rem;}
 .card-hdr-title{font-weight:700;font-size:.9rem;color:var(--text);}
 .card-body{padding:1.1rem 1.25rem;}
-
-/* SUMMARY CARDS */
 .scard{background:var(--card);border-radius:14px;padding:1.1rem;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
 .scard:hover{transform:translateY(-2px);box-shadow:var(--shadow-h);}
 .scard.g{border-left:4px solid var(--secondary);}
@@ -83,27 +71,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);trans
 .scard .sl{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-sub);margin-bottom:.2rem;}
 .scard .sv{font-size:1.25rem;font-weight:800;color:var(--text);line-height:1.2;}
 .scard .ss{font-size:.7rem;color:var(--text-sub);margin-top:.2rem;}
-
-/* GREETING */
 .greeting{background:linear-gradient(135deg,#1e3a5f 0%,#2d5a8e 55%,#1a6b5a 100%);border-radius:18px;padding:1.5rem;color:#fff;position:relative;overflow:hidden;margin-bottom:1.1rem;}
 .greeting::after{content:'🚗';position:absolute;right:1rem;bottom:-.5rem;font-size:4.5rem;opacity:.12;}
-
-/* FORMS */
 .fg{margin-bottom:1rem;}
 .fl{display:block;font-size:.72rem;font-weight:700;color:var(--text-sub);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.05em;}
 .fi{width:100%;padding:.6rem .9rem;border:2px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:.875rem;font-family:'Inter',sans-serif;transition:border-color .2s,box-shadow .2s;outline:none;}
 .fi:focus{border-color:var(--secondary);box-shadow:0 0 0 3px rgba(0,184,148,.15);}
-.fi.error{border-color:var(--danger);box-shadow:0 0 0 3px rgba(225,112,85,.15);}
-.fi.success{border-color:var(--secondary);}
 .fi-icon{position:relative;}
 .fi-icon .ic{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-sub);font-size:.78rem;pointer-events:none;}
 .fi-icon .fi{padding-left:2rem;}
 select.fi{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23546e8a' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:2rem;}
 .dark .fi{background:#1b2838;color:#e2e8f0;border-color:#2d4a6e;}
-.field-hint{font-size:.7rem;color:var(--text-sub);margin-top:.25rem;}
-.field-error{font-size:.7rem;color:var(--danger);margin-top:.25rem;display:none;}
-
-/* BUTTONS */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;padding:.6rem 1.1rem;border-radius:10px;font-weight:600;font-size:.835rem;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s;border:none;outline:none;-webkit-tap-highlight-color:transparent;}
 .btn:active{transform:scale(.97);}
 .btn-p{background:linear-gradient(135deg,#1e3a5f,#2d5a8e);color:#fff;box-shadow:0 4px 14px rgba(30,58,95,.3);}
@@ -119,47 +97,31 @@ select.fi{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 .btn-lg{padding:.75rem 1.5rem;font-size:.95rem;border-radius:12px;}
 .btn-full{width:100%;}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;}
-
-/* PLATFORM BADGES */
 .pbadge{display:inline-flex;align-items:center;gap:.25rem;padding:.18rem .55rem;border-radius:20px;font-size:.68rem;font-weight:700;}
 .p-uber{background:#000;color:#fff;}.p-99{background:#f9a825;color:#000;}.p-indrive{background:#1dd760;color:#000;}.p-bolt{background:#34d058;color:#000;}.p-outro{background:#636e72;color:#fff;}
-
-/* PROGRESS */
 .prog-wrap{background:var(--border);border-radius:100px;height:9px;overflow:hidden;}
 .prog-bar{height:100%;border-radius:100px;background:linear-gradient(90deg,#00b894,#00cec9);transition:width .8s cubic-bezier(.4,0,.2,1);}
-
-/* TABLE */
 .dtable{width:100%;border-collapse:collapse;font-size:.8rem;}
 .dtable th{padding:.65rem .9rem;text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-sub);background:var(--bg);border-bottom:2px solid var(--border);white-space:nowrap;}
 .dtable td{padding:.75rem .9rem;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap;}
 .dtable tr:hover td{background:rgba(0,184,148,.04);}
 .dtable tr:last-child td{border-bottom:none;}
 .dark .dtable th{background:#0d1b2a;}
-
-/* RESULT CARDS */
 .rcard{background:var(--card);border-radius:13px;padding:1rem;box-shadow:var(--shadow);display:flex;align-items:center;gap:.85rem;}
 .rcard-ic{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;}
-
-/* METRIC ROW */
 .mrow{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--border);}
 .mrow:last-child{border-bottom:none;}
 .ml{font-size:.8rem;color:var(--text-sub);}
 .mv{font-size:.85rem;font-weight:700;color:var(--text);}
-
-/* ALERTS */
 .alert{padding:.8rem 1rem;border-radius:12px;display:flex;align-items:flex-start;gap:.65rem;font-size:.83rem;margin-bottom:.75rem;}
 .alert-w{background:rgba(253,203,110,.12);border:1px solid rgba(253,203,110,.4);color:#b7791f;}
 .alert-s{background:rgba(0,184,148,.1);border:1px solid rgba(0,184,148,.3);color:#00796b;}
 .alert-d{background:rgba(225,112,85,.1);border:1px solid rgba(225,112,85,.3);color:#c0392b;}
 .alert-i{background:rgba(116,185,255,.1);border:1px solid rgba(116,185,255,.3);color:#0984e3;}
 .dark .alert-w{color:#fdcb6e;}.dark .alert-s{color:#00b894;}.dark .alert-d{color:#e17055;}.dark .alert-i{color:#74b9ff;}
-
-/* TAGS */
 .tag{display:inline-flex;align-items:center;gap:.25rem;padding:.18rem .6rem;border-radius:100px;font-size:.68rem;font-weight:600;}
 .tag-g{background:rgba(0,184,148,.1);color:#00b894;}.tag-r{background:rgba(225,112,85,.1);color:#e17055;}.tag-b{background:rgba(45,90,142,.1);color:#1e3a5f;}
 .dark .tag-b{background:rgba(116,185,255,.1);color:#74b9ff;}.dark .tag-g{color:#00b894;}
-
-/* TOAST */
 #toast{position:fixed;bottom:5.5rem;right:1rem;padding:.75rem 1rem;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.25);display:flex;align-items:center;gap:.6rem;font-size:.82rem;font-weight:600;z-index:9999;transform:translateY(150%);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);max-width:320px;}
 #toast.show{transform:translateY(0);opacity:1;}
 #toast.success{background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;}
@@ -168,8 +130,6 @@ select.fi{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 #toast.warning{background:linear-gradient(135deg,#fdcb6e,#e17055);color:#fff;}
 #toastUndo{background:rgba(255,255,255,.25);border:none;color:#fff;font-size:.75rem;font-weight:700;padding:.2rem .55rem;border-radius:6px;cursor:pointer;margin-left:.25rem;}
 @media(min-width:641px){#toast{bottom:1.25rem;right:1.25rem;}}
-
-/* CUSTOM MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(4px);}
 .modal-overlay.open{opacity:1;pointer-events:all;}
 .modal-box{background:var(--card);border-radius:20px;padding:1.75rem;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);transform:scale(.9) translateY(20px);transition:transform .25s cubic-bezier(.4,0,.2,1);}
@@ -178,8 +138,6 @@ select.fi{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 .modal-title{font-size:1.05rem;font-weight:800;color:var(--text);text-align:center;margin-bottom:.5rem;}
 .modal-msg{font-size:.85rem;color:var(--text-sub);text-align:center;line-height:1.5;margin-bottom:1.35rem;}
 .modal-actions{display:flex;gap:.65rem;}
-
-/* ONBOARDING */
 .onboard-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1e3a5f,#2d5a8e,#1a6b5a);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;transition:opacity .5s;}
 .onboard-overlay.hide{opacity:0;pointer-events:none;}
 .onboard-step{display:none;text-align:center;animation:fadeUp .4s ease;}
@@ -191,8 +149,6 @@ select.fi{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 .onboard-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);transition:all .3s;}
 .onboard-dot.active{width:24px;border-radius:4px;background:#00b894;}
 .onboard-skip{position:absolute;top:1.5rem;right:1.5rem;background:rgba(255,255,255,.15);border:none;color:rgba(255,255,255,.7);font-size:.8rem;padding:.4rem .85rem;border-radius:8px;cursor:pointer;}
-
-/* TIMER */
 .timer-display{background:linear-gradient(135deg,#1e3a5f,#2d5a8e);border-radius:22px;padding:2.5rem 2rem;text-align:center;margin-bottom:1.25rem;}
 .timer-digits{font-size:3.5rem;font-weight:800;color:#fff;letter-spacing:.05em;font-variant-numeric:tabular-nums;}
 .timer-label{font-size:.75rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;margin-top:.35rem;}
@@ -202,29 +158,16 @@ select.fi{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 .timer-status.idle{background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);}
 .timer-btn-wrap{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
 .timer-btn-big{padding:1rem;border-radius:16px;font-size:1rem;font-weight:700;}
-
-/* SKELETON LOADING */
 .skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
 @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-.sk-line{height:14px;margin-bottom:8px;}
-.sk-card{height:90px;border-radius:14px;margin-bottom:.75rem;}
-
-/* EMPTY STATE */
 .empty-state{text-align:center;padding:3rem 1.5rem;color:var(--text-sub);}
 .empty-state svg{width:120px;height:120px;margin:0 auto 1.25rem;display:block;opacity:.4;}
 .empty-state h3{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.4rem;}
 .empty-state p{font-size:.82rem;line-height:1.5;}
-
-/* ANIMATED COUNTER */
-.counter{display:inline-block;transition:all .3s;}
-
-/* SHIFT BADGE */
 .shift-badge{display:inline-flex;align-items:center;gap:.25rem;padding:.18rem .55rem;border-radius:20px;font-size:.68rem;font-weight:700;}
 .shift-m{background:rgba(253,203,110,.15);color:#e17055;}
 .shift-t{background:rgba(116,185,255,.15);color:#0984e3;}
 .shift-n{background:rgba(162,155,254,.15);color:#6c5ce7;}
-
-/* MISC */
 hr.div{border:none;border-top:1px solid var(--border);margin:1rem 0;}
 .stitle{font-size:1.25rem;font-weight:800;color:var(--text);margin-bottom:.2rem;}
 .ssub{font-size:.78rem;color:var(--text-sub);margin-bottom:1.25rem;}
@@ -244,6 +187,7 @@ input[type=number]{-moz-appearance:textfield;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;}
 @media(max-width:540px){.g2{grid-template-columns:1fr;}.g3{grid-template-columns:1fr 1fr;}.g4{grid-template-columns:1fr 1fr;}}
 @media print{.app-header,.nav-wrap,.bnav,.more-overlay,.more-sheet,#toast,.no-print,.draft-bar,.modal-overlay,.onboard-overlay{display:none!important;}.main{padding-bottom:0!important;}body{background:#fff;}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
 </style>
 </head>
 <body>
@@ -251,31 +195,13 @@ input[type=number]{-moz-appearance:textfield;}
 <!-- ONBOARDING -->
 <div class="onboard-overlay" id="onboarding">
     <button class="onboard-skip" onclick="finishOnboarding()">Pular</button>
-    <div class="onboard-step active" id="ob0">
-        <div class="onboard-icon">🚗</div>
-        <div class="onboard-title">MotoGanhos Pro</div>
-        <div class="onboard-desc">Gestão completa para motoristas de aplicativo. Controle seus ganhos, despesas, metas e muito mais!</div>
-    </div>
-    <div class="onboard-step" id="ob1">
-        <div class="onboard-icon">⏱️</div>
-        <div class="onboard-title">Timer de Trabalho</div>
-        <div class="onboard-desc">Inicie o timer ao começar o dia. Ao finalizar, ele preenche automaticamente os horários na calculadora!</div>
-    </div>
-    <div class="onboard-step" id="ob2">
-        <div class="onboard-icon">📊</div>
-        <div class="onboard-title">Dashboard Completo</div>
-        <div class="onboard-desc">Acompanhe seus ganhos do dia, semana e mês. Visualize metas e evolução nos gráficos.</div>
-    </div>
-    <div class="onboard-step" id="ob3">
-        <div class="onboard-icon">🎯</div>
-        <div class="onboard-title">Metas e Relatórios</div>
-        <div class="onboard-desc">Defina metas diárias, semanais e mensais. Gere relatórios detalhados e compartilhe via WhatsApp!</div>
-    </div>
+    <div class="onboard-step active" id="ob0"><div class="onboard-icon">🚗</div><div class="onboard-title">MotoGanhos Pro</div><div class="onboard-desc">Gestão completa para motoristas de aplicativo. Controle seus ganhos, despesas, metas e muito mais!</div></div>
+    <div class="onboard-step" id="ob1"><div class="onboard-icon">⏱️</div><div class="onboard-title">Timer de Trabalho</div><div class="onboard-desc">Inicie o timer ao começar o dia. Ao finalizar, ele preenche automaticamente os horários na calculadora!</div></div>
+    <div class="onboard-step" id="ob2"><div class="onboard-icon">📊</div><div class="onboard-title">Dashboard Completo</div><div class="onboard-desc">Acompanhe seus ganhos do dia, semana e mês. Visualize metas e evolução nos gráficos.</div></div>
+    <div class="onboard-step" id="ob3"><div class="onboard-icon">🎯</div><div class="onboard-title">Metas e Relatórios</div><div class="onboard-desc">Defina metas diárias, semanais e mensais. Gere relatórios detalhados e compartilhe via WhatsApp!</div></div>
     <div class="onboard-dots">
-        <div class="onboard-dot active" id="od0"></div>
-        <div class="onboard-dot" id="od1"></div>
-        <div class="onboard-dot" id="od2"></div>
-        <div class="onboard-dot" id="od3"></div>
+        <div class="onboard-dot active" id="od0"></div><div class="onboard-dot" id="od1"></div>
+        <div class="onboard-dot" id="od2"></div><div class="onboard-dot" id="od3"></div>
     </div>
     <button class="btn btn-s btn-lg" id="obNextBtn" onclick="obNext()" style="min-width:200px">Próximo <i class="fas fa-arrow-right"></i></button>
 </div>
@@ -352,29 +278,28 @@ input[type=number]{-moz-appearance:textfield;}
     <div class="more-handle" onclick="fecharMais()"></div>
     <div class="more-title">Mais opções</div>
     <div class="more-grid">
-        <div class="more-btn" id="mbtn-metas"         onclick="irMais('metas')">        <i class="fas fa-bullseye"              style="color:var(--secondary)"></i> <span>Metas</span></div>
-        <div class="more-btn" id="mbtn-custokm"       onclick="irMais('custokm')">      <i class="fas fa-road"                  style="color:#0984e3"></i>          <span>Custo KM</span></div>
-        <div class="more-btn" id="mbtn-estimativas"   onclick="irMais('estimativas')">  <i class="fas fa-chart-line"            style="color:var(--secondary)"></i> <span>Estimativas</span></div>
-        <div class="more-btn" id="mbtn-abastecimento" onclick="irMais('abastecimento')"><i class="fas fa-gas-pump"              style="color:var(--danger)"></i>    <span>Combustível</span></div>
-        <div class="more-btn" id="mbtn-manutencao"    onclick="irMais('manutencao')">   <i class="fas fa-wrench"                style="color:var(--warning)"></i>   <span>Manutenção</span></div>
-        <div class="more-btn" id="mbtn-despesas"      onclick="irMais('despesas')">     <i class="fas fa-wallet"                style="color:var(--purple)"></i>    <span>Despesas</span></div>
-        <div class="more-btn" id="mbtn-impostos"      onclick="irMais('impostos')">     <i class="fas fa-file-invoice-dollar"   style="color:var(--danger)"></i>    <span>Impostos</span></div>
-        <div class="more-btn" id="mbtn-agenda"        onclick="irMais('agenda')">       <i class="fas fa-calendar-check"        style="color:#0984e3"></i>          <span>Agenda</span></div>
-        <div class="more-btn" id="mbtn-relatorio"     onclick="irMais('relatorio')">    <i class="fas fa-file-alt"              style="color:var(--purple)"></i>    <span>Relatório</span></div>
-        <div class="more-btn" id="mbtn-performance"   onclick="irMais('performance')">  <i class="fas fa-chart-bar"             style="color:var(--info)"></i>      <span>Performance</span></div>
+        <div class="more-btn" id="mbtn-metas"         onclick="irMais('metas')">        <i class="fas fa-bullseye"            style="color:var(--secondary)"></i><span>Metas</span></div>
+        <div class="more-btn" id="mbtn-custokm"       onclick="irMais('custokm')">      <i class="fas fa-road"                style="color:#0984e3"></i>         <span>Custo KM</span></div>
+        <div class="more-btn" id="mbtn-estimativas"   onclick="irMais('estimativas')">  <i class="fas fa-chart-line"          style="color:var(--secondary)"></i><span>Estimativas</span></div>
+        <div class="more-btn" id="mbtn-abastecimento" onclick="irMais('abastecimento')"><i class="fas fa-gas-pump"            style="color:var(--danger)"></i>   <span>Combustível</span></div>
+        <div class="more-btn" id="mbtn-manutencao"    onclick="irMais('manutencao')">   <i class="fas fa-wrench"              style="color:var(--warning)"></i>  <span>Manutenção</span></div>
+        <div class="more-btn" id="mbtn-despesas"      onclick="irMais('despesas')">     <i class="fas fa-wallet"              style="color:var(--purple)"></i>   <span>Despesas</span></div>
+        <div class="more-btn" id="mbtn-impostos"      onclick="irMais('impostos')">     <i class="fas fa-file-invoice-dollar" style="color:var(--danger)"></i>   <span>Impostos</span></div>
+        <div class="more-btn" id="mbtn-agenda"        onclick="irMais('agenda')">       <i class="fas fa-calendar-check"      style="color:#0984e3"></i>         <span>Agenda</span></div>
+        <div class="more-btn" id="mbtn-relatorio"     onclick="irMais('relatorio')">    <i class="fas fa-file-alt"            style="color:var(--purple)"></i>   <span>Relatório</span></div>
+        <div class="more-btn" id="mbtn-performance"   onclick="irMais('performance')">  <i class="fas fa-chart-bar"           style="color:var(--info)"></i>     <span>Performance</span></div>
     </div>
 </div>
 
 <main class="main">
 
-<!-- ═══════ DASHBOARD ═══════ -->
+<!-- DASHBOARD -->
 <section id="sec-dashboard" class="section active">
     <div class="greeting fade-up">
         <div style="font-size:.72rem;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem" id="grDate"></div>
         <div style="font-size:1.5rem;font-weight:800;color:#fff;margin-bottom:.2rem" id="grText"></div>
         <div style="font-size:.8rem;color:rgba(255,255,255,.7)" id="grSub"></div>
     </div>
-    <!-- Meta Diária -->
     <div class="card fade-up" style="margin-bottom:1rem">
         <div class="card-body">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.65rem">
@@ -384,14 +309,12 @@ input[type=number]{-moz-appearance:textfield;}
             <div class="prog-wrap"><div class="prog-bar" id="metaDiaBar" style="width:0%"></div></div>
         </div>
     </div>
-    <!-- Summary Cards -->
     <div class="g4 fade-up" style="margin-bottom:1rem">
-        <div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-calendar-day"></i></div><div class="sl">Hoje</div><div class="sv counter" id="dHoje">--</div><div class="ss" id="dHojeKm">0 km</div></div>
-        <div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-calendar-week"></i></div><div class="sl">Semana</div><div class="sv counter" id="dSem">--</div><div class="ss" id="dSemDias">0 dias</div></div>
-        <div class="scard y"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger)"><i class="fas fa-calendar-alt"></i></div><div class="sl">Mês</div><div class="sv counter" id="dMes">--</div><div class="ss" id="dMesDias">0 dias</div></div>
-        <div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-hand-holding-usd"></i></div><div class="sl">Lucro Mês</div><div class="sv counter" id="dLucroMes">--</div><div class="ss">líquido</div></div>
+        <div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-calendar-day"></i></div><div class="sl">Hoje</div><div class="sv" id="dHoje">--</div><div class="ss" id="dHojeKm">0 km</div></div>
+        <div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-calendar-week"></i></div><div class="sl">Semana</div><div class="sv" id="dSem">--</div><div class="ss" id="dSemDias">0 dias</div></div>
+        <div class="scard y"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger)"><i class="fas fa-calendar-alt"></i></div><div class="sl">Mês</div><div class="sv" id="dMes">--</div><div class="ss" id="dMesDias">0 dias</div></div>
+        <div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-hand-holding-usd"></i></div><div class="sl">Lucro Mês</div><div class="sv" id="dLucroMes">--</div><div class="ss">líquido</div></div>
     </div>
-    <!-- Timer status no dashboard -->
     <div id="dashTimerStatus" style="display:none;margin-bottom:1rem">
         <div class="card" style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e)">
             <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem">
@@ -403,12 +326,10 @@ input[type=number]{-moz-appearance:textfield;}
             </div>
         </div>
     </div>
-    <!-- Chart -->
     <div class="card fade-up" style="margin-bottom:1rem">
         <div class="card-hdr"><i class="fas fa-chart-line" style="color:var(--secondary)"></i><span class="card-hdr-title">Últimos 7 Dias</span></div>
         <div class="card-body"><canvas id="dashChart" height="160"></canvas></div>
     </div>
-    <!-- Últimos registros -->
     <div class="card fade-up">
         <div class="card-hdr" style="justify-content:space-between">
             <div style="display:flex;align-items:center;gap:.65rem"><i class="fas fa-clock" style="color:var(--info)"></i><span class="card-hdr-title">Últimos Registros</span></div>
@@ -418,7 +339,7 @@ input[type=number]{-moz-appearance:textfield;}
     </div>
 </section>
 
-<!-- ═══════ TIMER ═══════ -->
+<!-- TIMER -->
 <section id="sec-timer" class="section">
     <div class="stitle">Timer de Trabalho</div>
     <div class="ssub">Controle seu turno — os horários são preenchidos automaticamente</div>
@@ -433,7 +354,6 @@ input[type=number]{-moz-appearance:textfield;}
                 <div><div class="fl">Início do turno</div><div style="font-size:1.1rem;font-weight:700;color:var(--text)" id="timerStartDisplay">--:--</div></div>
                 <div><div class="fl">Fim do turno</div><div style="font-size:1.1rem;font-weight:700;color:var(--text)" id="timerEndDisplay">--:--</div></div>
             </div>
-            <!-- Pausas -->
             <div id="pausesList" style="margin-bottom:.75rem"></div>
             <div class="timer-btn-wrap">
                 <button class="btn btn-s timer-btn-big btn-full" id="timerStartBtn" onclick="timerToggle()"><i class="fas fa-play"></i> Iniciar Turno</button>
@@ -448,7 +368,7 @@ input[type=number]{-moz-appearance:textfield;}
     </div>
 </section>
 
-<!-- ═══════ CALCULADORA ═══════ -->
+<!-- CALCULADORA -->
 <section id="sec-calculadora" class="section">
     <div class="stitle">Calculadora de Ganhos</div>
     <div class="ssub">Registre os dados do seu dia de trabalho</div>
@@ -517,7 +437,7 @@ input[type=number]{-moz-appearance:textfield;}
     </div>
 </section>
 
-<!-- ═══════ HISTÓRICO ═══════ -->
+<!-- HISTÓRICO -->
 <section id="sec-historico" class="section">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.1rem;flex-wrap:wrap;gap:.65rem">
         <div><div class="stitle">Histórico de Ganhos</div><div style="font-size:.78rem;color:var(--text-sub)">Todos os seus registros</div></div>
@@ -550,7 +470,7 @@ input[type=number]{-moz-appearance:textfield;}
     <div id="estatisticasHistorico"></div>
 </section>
 
-<!-- ═══════ CUSTO KM ═══════ -->
+<!-- CUSTO KM -->
 <section id="sec-custokm" class="section">
     <div class="stitle">Custo por KM</div>
     <div class="ssub">Saiba exatamente quanto custa cada quilômetro e seu ponto de equilíbrio</div>
@@ -577,15 +497,11 @@ input[type=number]{-moz-appearance:textfield;}
             <div class="scard y" style="text-align:center"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger);margin:0 auto .5rem"><i class="fas fa-receipt"></i></div><div class="sl">Despesas Diárias</div><div class="sv" id="resDespDiarias">--</div></div>
             <div class="scard g" style="text-align:center"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary);margin:0 auto .5rem"><i class="fas fa-dollar-sign"></i></div><div class="sl">Valor Líquido</div><div class="sv" id="resValorLiq">--</div></div>
         </div>
-        <!-- Ponto de Equilíbrio -->
-        <div class="card">
-            <div class="card-hdr"><i class="fas fa-balance-scale" style="color:var(--warning)"></i><span class="card-hdr-title">Ponto de Equilíbrio</span></div>
-            <div class="card-body" id="pontoEquilibrio"></div>
-        </div>
+        <div class="card"><div class="card-hdr"><i class="fas fa-balance-scale" style="color:var(--warning)"></i><span class="card-hdr-title">Ponto de Equilíbrio</span></div><div class="card-body" id="pontoEquilibrio"></div></div>
     </div>
 </section>
 
-<!-- ═══════ ESTIMATIVAS ═══════ -->
+<!-- ESTIMATIVAS -->
 <section id="sec-estimativas" class="section">
     <div class="stitle">Estimativas de Ganhos</div>
     <div class="ssub">Calcule quanto você precisa faturar para atingir seu objetivo</div>
@@ -621,15 +537,11 @@ input[type=number]{-moz-appearance:textfield;}
             <div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-hand-holding-usd"></i></div><div class="sl">Lucro Diário</div><div class="sv" id="lucroLiquidoEst">--</div></div>
             <div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-calendar-week"></i></div><div class="sl">Lucro Semanal</div><div class="sv" id="lucroSemanal">--</div></div>
         </div>
-        <!-- Previsão baseada no histórico -->
-        <div class="card" id="forecastCard" style="display:none">
-            <div class="card-hdr"><i class="fas fa-crystal-ball" style="color:var(--purple)"></i><span class="card-hdr-title">Previsão Baseada no Histórico</span></div>
-            <div class="card-body" id="forecastContent"></div>
-        </div>
+        <div class="card" id="forecastCard" style="display:none"><div class="card-hdr"><i class="fas fa-chart-line" style="color:var(--purple)"></i><span class="card-hdr-title">Previsão Baseada no Histórico</span></div><div class="card-body" id="forecastContent"></div></div>
     </div>
 </section>
 
-<!-- ═══════ METAS ═══════ -->
+<!-- METAS -->
 <section id="sec-metas" class="section">
     <div class="stitle">Minhas Metas</div>
     <div class="ssub">Defina e acompanhe seus objetivos de lucro</div>
@@ -647,7 +559,7 @@ input[type=number]{-moz-appearance:textfield;}
     <div id="progressoMetas"></div>
 </section>
 
-<!-- ═══════ ABASTECIMENTO ═══════ -->
+<!-- ABASTECIMENTO -->
 <section id="sec-abastecimento" class="section">
     <div class="stitle">Controle de Combustível</div>
     <div class="ssub">Registre abastecimentos e acompanhe o histórico de preços</div>
@@ -663,11 +575,8 @@ input[type=number]{-moz-appearance:textfield;}
                     <div class="fg"><label class="fl">Posto / Bandeira (opcional)</label><input type="text" id="abastPosto" class="fi" placeholder="Ex: Shell, Ipiranga..."></div>
                     <div class="fg"><label class="fl">Tipo de Combustível</label>
                         <select id="abastTipo" class="fi">
-                            <option value="gasolina">⛽ Gasolina Comum</option>
-                            <option value="gasolinaA">⛽ Gasolina Aditivada</option>
-                            <option value="etanol">🌿 Etanol</option>
-                            <option value="gnv">💧 GNV</option>
-                            <option value="diesel">🔵 Diesel</option>
+                            <option value="gasolina">⛽ Gasolina Comum</option><option value="gasolinaA">⛽ Gasolina Aditivada</option>
+                            <option value="etanol">🌿 Etanol</option><option value="gnv">💧 GNV</option><option value="diesel">🔵 Diesel</option>
                         </select>
                     </div>
                 </div>
@@ -676,22 +585,17 @@ input[type=number]{-moz-appearance:textfield;}
         </div>
     </div>
     <div class="g4" id="abastResumo" style="margin-bottom:1rem"></div>
-    <div class="card" style="margin-bottom:1rem" id="abastChartCard" style="display:none">
+    <div class="card" style="margin-bottom:1rem" id="abastChartCard">
         <div class="card-hdr"><i class="fas fa-chart-line" style="color:var(--secondary)"></i><span class="card-hdr-title">Histórico de Preços do Combustível</span></div>
         <div class="card-body"><canvas id="abastChart" height="180"></canvas></div>
     </div>
     <div class="card">
         <div class="card-hdr"><i class="fas fa-list" style="color:var(--info)"></i><span class="card-hdr-title">Histórico de Abastecimentos</span></div>
-        <div style="overflow-x:auto">
-            <table class="dtable">
-                <thead><tr><th>Data</th><th>Tipo</th><th>KM</th><th>Litros</th><th>R$/L</th><th>Total</th><th>Consumo Real</th><th>Ações</th></tr></thead>
-                <tbody id="abastCorpo"></tbody>
-            </table>
-        </div>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Data</th><th>Tipo</th><th>KM</th><th>Litros</th><th>R$/L</th><th>Total</th><th>Consumo Real</th><th>Ações</th></tr></thead><tbody id="abastCorpo"></tbody></table></div>
     </div>
 </section>
 
-<!-- ═══════ MANUTENÇÃO ═══════ -->
+<!-- MANUTENÇÃO -->
 <section id="sec-manutencao" class="section">
     <div class="stitle">Controle de Manutenção</div>
     <div class="ssub">Registre manutenções e receba alertas de próximas revisões</div>
@@ -706,8 +610,7 @@ input[type=number]{-moz-appearance:textfield;}
                         <select id="manutTipo" class="fi">
                             <option value="oleo">🔧 Troca de Óleo</option><option value="pneu">🔄 Pneus</option>
                             <option value="freio">🛑 Freios</option><option value="revisao">🔩 Revisão Geral</option>
-                            <option value="filtro">🌬️ Filtros</option><option value="bateria">🔋 Bateria</option>
-                            <option value="outro">🔧 Outro</option>
+                            <option value="filtro">🌬️ Filtros</option><option value="bateria">🔋 Bateria</option><option value="outro">🔧 Outro</option>
                         </select>
                     </div>
                     <div class="fg"><label class="fl">KM Atual</label><input type="number" id="manutKm" step="1" min="0" class="fi" placeholder="Ex: 45000" required></div>
@@ -719,18 +622,10 @@ input[type=number]{-moz-appearance:textfield;}
             </form>
         </div>
     </div>
-    <div class="card">
-        <div class="card-hdr"><i class="fas fa-list" style="color:var(--info)"></i><span class="card-hdr-title">Histórico de Manutenções</span></div>
-        <div style="overflow-x:auto">
-            <table class="dtable">
-                <thead><tr><th>Data</th><th>Tipo</th><th>KM</th><th>Custo</th><th>Próx. KM</th><th>Descrição</th><th>Ações</th></tr></thead>
-                <tbody id="manutCorpo"></tbody>
-            </table>
-        </div>
-    </div>
+    <div class="card"><div class="card-hdr"><i class="fas fa-list" style="color:var(--info)"></i><span class="card-hdr-title">Histórico de Manutenções</span></div><div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Data</th><th>Tipo</th><th>KM</th><th>Custo</th><th>Próx. KM</th><th>Descrição</th><th>Ações</th></tr></thead><tbody id="manutCorpo"></tbody></table></div></div>
 </section>
 
-<!-- ═══════ DESPESAS EXTRAS ═══════ -->
+<!-- DESPESAS -->
 <section id="sec-despesas" class="section">
     <div class="stitle">Despesas Extras</div>
     <div class="ssub">Registre gastos como pedágio, multa, lavagem, alimentação e outros</div>
@@ -742,15 +637,10 @@ input[type=number]{-moz-appearance:textfield;}
                     <div class="fg"><label class="fl">Data</label><input type="date" id="despData" class="fi" required></div>
                     <div class="fg"><label class="fl">Categoria</label>
                         <select id="despCategoria" class="fi">
-                            <option value="pedagio">🛣️ Pedágio</option>
-                            <option value="multa">🚨 Multa de Trânsito</option>
-                            <option value="lavagem">🚿 Lavagem</option>
-                            <option value="alimentacao">🍔 Alimentação</option>
-                            <option value="estacionamento">🅿️ Estacionamento</option>
-                            <option value="seguro">🛡️ Seguro</option>
-                            <option value="ipva">📄 IPVA / Licenciamento</option>
-                            <option value="app">📱 Taxa de App</option>
-                            <option value="outro">💸 Outro</option>
+                            <option value="pedagio">🛣️ Pedágio</option><option value="multa">🚨 Multa</option>
+                            <option value="lavagem">🚿 Lavagem</option><option value="alimentacao">🍔 Alimentação</option>
+                            <option value="estacionamento">🅿️ Estacionamento</option><option value="seguro">🛡️ Seguro</option>
+                            <option value="ipva">📄 IPVA</option><option value="app">📱 Taxa de App</option><option value="outro">💸 Outro</option>
                         </select>
                     </div>
                     <div class="fg"><label class="fl">Valor (R$)</label><div class="fi-icon"><span class="ic">R$</span><input type="number" id="despValor" step="0.01" min="0.01" class="fi" placeholder="0,00" required></div></div>
@@ -764,32 +654,24 @@ input[type=number]{-moz-appearance:textfield;}
     <div class="card">
         <div class="card-hdr" style="justify-content:space-between">
             <div style="display:flex;align-items:center;gap:.65rem"><i class="fas fa-list" style="color:var(--info)"></i><span class="card-hdr-title">Histórico de Despesas</span></div>
-            <div style="display:flex;gap:.45rem;align-items:center">
-                <select id="despFiltroMes" class="fi" style="width:auto;padding:.3rem .65rem;font-size:.78rem" onchange="renderDespesas()"><option value="">Todos os meses</option></select>
-            </div>
+            <select id="despFiltroMes" class="fi" style="width:auto;padding:.3rem .65rem;font-size:.78rem" onchange="renderDespesas()"><option value="">Todos os meses</option></select>
         </div>
-        <div style="overflow-x:auto">
-            <table class="dtable">
-                <thead><tr><th>Data</th><th>Categoria</th><th>Valor</th><th>Descrição</th><th>Ações</th></tr></thead>
-                <tbody id="despCorpo"></tbody>
-            </table>
-        </div>
+        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Data</th><th>Categoria</th><th>Valor</th><th>Descrição</th><th>Ações</th></tr></thead><tbody id="despCorpo"></tbody></table></div>
     </div>
 </section>
 
-<!-- ═══════ IMPOSTOS ═══════ -->
+<!-- IMPOSTOS -->
 <section id="sec-impostos" class="section">
     <div class="stitle">Calculadora de Impostos</div>
     <div class="ssub">Calcule seus impostos como MEI ou autônomo</div>
     <div class="card" style="margin-bottom:1rem">
         <div class="card-hdr"><i class="fas fa-file-invoice-dollar" style="color:var(--danger)"></i><span class="card-hdr-title">Configurar Perfil Fiscal</span></div>
         <div class="card-body">
-            <div class="fg">
-                <label class="fl">Tipo de contribuinte</label>
+            <div class="fg"><label class="fl">Tipo de contribuinte</label>
                 <select id="impostoTipo" class="fi" onchange="renderImpostos()">
                     <option value="mei">MEI — Microempreendedor Individual</option>
                     <option value="autonomo">Autônomo — Pessoa Física</option>
-                    <option value="clt">CLT / Assalariado (sem impostos diretos)</option>
+                    <option value="clt">CLT / Assalariado</option>
                 </select>
             </div>
             <div class="fg"><label class="fl">Ganho Bruto Mensal (R$)</label><div class="fi-icon"><span class="ic">R$</span><input type="number" id="impostoBruto" step="0.01" min="0" class="fi" placeholder="0,00" oninput="renderImpostos()"></div></div>
@@ -799,7 +681,7 @@ input[type=number]{-moz-appearance:textfield;}
     <div id="impostoResultado"></div>
 </section>
 
-<!-- ═══════ AGENDA ═══════ -->
+<!-- AGENDA -->
 <section id="sec-agenda" class="section">
     <div class="stitle">Agenda de Trabalho</div>
     <div class="ssub">Planeje seus dias de trabalho e acompanhe sua frequência</div>
@@ -816,7 +698,6 @@ input[type=number]{-moz-appearance:textfield;}
             <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;font-size:.75rem">
                 <span><span style="display:inline-block;width:12px;height:12px;background:var(--secondary);border-radius:3px;margin-right:.35rem"></span>Dia trabalhado</span>
                 <span><span style="display:inline-block;width:12px;height:12px;background:rgba(0,184,148,.2);border:1px solid var(--secondary);border-radius:3px;margin-right:.35rem"></span>Planejado</span>
-                <span><span style="display:inline-block;width:12px;height:12px;background:var(--danger);opacity:.5;border-radius:3px;margin-right:.35rem"></span>Não trabalhou</span>
             </div>
         </div>
     </div>
@@ -831,7 +712,7 @@ input[type=number]{-moz-appearance:textfield;}
     </div>
 </section>
 
-<!-- ═══════ RELATÓRIO ═══════ -->
+<!-- RELATÓRIO -->
 <section id="sec-relatorio" class="section">
     <div class="stitle">Relatório Mensal</div>
     <div class="ssub">Resumo completo do seu mês de trabalho</div>
@@ -848,7 +729,7 @@ input[type=number]{-moz-appearance:textfield;}
     <div id="resultadoRelatorio"></div>
 </section>
 
-<!-- ═══════ PERFORMANCE ═══════ -->
+<!-- PERFORMANCE -->
 <section id="sec-performance" class="section">
     <div class="stitle">Performance & Análise</div>
     <div class="ssub">Entenda seus padrões e melhore seus resultados</div>
@@ -857,14 +738,7 @@ input[type=number]{-moz-appearance:textfield;}
 
 </main>
 
-<style>
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
-</style>
-
 <script>
-// ══════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════
 const $ = id => document.getElementById(id);
 const fmt = v => new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(parseFloat(v)||0);
 const fmtData = s => { if(!s)return'--'; const[a,m,d]=s.split('-'); return`${d}/${m}/${a}`; };
@@ -879,37 +753,52 @@ function getShift(hi){const h=parseInt(hi.split(':')[0]);return h>=6&&h<12?'manh
 function getShiftLabel(s){return{manha:'🌅 Manhã',tarde:'☀️ Tarde',noite:'🌙 Noite'}[s]||'--';}
 function getShiftClass(s){return{manha:'shift-m',tarde:'shift-t',noite:'shift-n'}[s]||'shift-t';}
 
-// ══════════════════════════════════════════
-// DADOS
-// ══════════════════════════════════════════
-let historico      = loadData('historico',[]).filter(validarRegistro);
-let abastecimentos = loadData('abastecimentos',[]);
-let manutencoes    = loadData('manutencoes',[]);
-let metas          = loadData('metas',{diaria:0,semanal:0,mensal:0});
-let despesas       = loadData('despesas',[]);
-let timerHistorico = loadData('timerHistorico',[]);
-let agenda         = loadData('agenda',{});
-let editandoTimestamp=null, grafico=null, dashChart=null, abastChartInst=null;
-let undoBuffer=null, undoTimer=null;
-let draftTimer=null;
+let historico=loadData('historico',[]).filter(validarRegistro);
+let abastecimentos=loadData('abastecimentos',[]);
+let manutencoes=loadData('manutencoes',[]);
+let metas=loadData('metas',{diaria:0,semanal:0,mensal:0});
+let despesas=loadData('despesas',[]);
+let timerHistorico=loadData('timerHistorico',[]);
+let agenda=loadData('agenda',{});
+let editandoTimestamp=null,grafico=null,dashChart=null,abastChartInst=null;
+let undoBuffer=null,undoTimer=null,draftTimer=null;
 const bnavPrincipais=['dashboard','timer','calculadora','historico'];
 
 // ══════════════════════════════════════════
-// PWA — Manifest + Service Worker
+// PWA CORRIGIDO — Service Worker externo
 // ══════════════════════════════════════════
-(function(){
-    const man={name:"MotoGanhos Pro",short_name:"MotoGanhos",description:"Gestão para motoristas",start_url:".",display:"standalone",background_color:"#0d1b2a",theme_color:"#1e3a5f",icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231e3a5f'/%3E%3Ctext y='.9em' font-size='80' x='10'%3E🚗%3C/text%3E%3C/svg%3E",sizes:"192x192",type:"image/svg+xml"}]};
-    const mb=new Blob([JSON.stringify(man)],{type:'application/manifest+json'});
-    const ml=document.createElement('link');ml.rel='manifest';ml.href=URL.createObjectURL(mb);document.head.appendChild(ml);
-    if('serviceWorker' in navigator){
-        const sw=`self.addEventListener('install',e=>e.waitUntil(caches.open('mg-v1').then(c=>c.addAll(['.']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))))`;
-        const swb=new Blob([sw],{type:'application/javascript'});
-        navigator.serviceWorker.register(URL.createObjectURL(swb)).catch(()=>{});
+if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>{
+        navigator.serviceWorker.register('/motoganhos/sw.js')
+            .then(reg=>console.log('SW registrado:',reg.scope))
+            .catch(err=>console.log('SW erro:',err));
+    });
+}
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{
+    e.preventDefault();
+    deferredPrompt=e;
+    $('installBtn').classList.add('show');
+    console.log('PWA: pronto para instalar!');
+});
+
+window.addEventListener('appinstalled',()=>{
+    $('installBtn').classList.remove('show');
+    deferredPrompt=null;
+    toast('App instalado com sucesso! 🎉','success');
+});
+
+window.installApp=()=>{
+    if(deferredPrompt){
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(choice=>{
+            if(choice.outcome==='accepted')toast('Instalando o app...','success');
+            deferredPrompt=null;
+            $('installBtn').classList.remove('show');
+        });
     }
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').classList.add('show');});
-    window.installApp=()=>{if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;$('installBtn').classList.remove('show');});}};
-})();
+};
 
 // ══════════════════════════════════════════
 // ONBOARDING
@@ -919,14 +808,11 @@ function obNext(){
     if(obStep<3){obStep++;document.querySelectorAll('.onboard-step').forEach((s,i)=>s.classList.toggle('active',i===obStep));document.querySelectorAll('.onboard-dot').forEach((d,i)=>d.classList.toggle('active',i===obStep));if(obStep===3)$('obNextBtn').innerHTML='<i class="fas fa-rocket"></i> Começar!';}
     else finishOnboarding();
 }
-function finishOnboarding(){
-    $('onboarding').classList.add('hide');setTimeout(()=>{$('onboarding').style.display='none';},500);
-    saveData('onboardingDone',true);
-}
+function finishOnboarding(){$('onboarding').classList.add('hide');setTimeout(()=>{$('onboarding').style.display='none';},500);saveData('onboardingDone',true);}
 if(loadData('onboardingDone',false)){$('onboarding').style.display='none';}
 
 // ══════════════════════════════════════════
-// MODAL CUSTOMIZADO
+// MODAL
 // ══════════════════════════════════════════
 let modalCb=null;
 function showModal(title,msg,type='danger',confirmTxt='Confirmar',cancelTxt='Cancelar'){
@@ -934,12 +820,8 @@ function showModal(title,msg,type='danger',confirmTxt='Confirmar',cancelTxt='Can
         modalCb=res;
         const icons={danger:'🗑️',warning:'⚠️',info:'ℹ️',success:'✅'};
         const colors={danger:'rgba(225,112,85,.15)',warning:'rgba(253,203,110,.15)',info:'rgba(116,185,255,.15)',success:'rgba(0,184,148,.15)'};
-        $('modalIcon').textContent=icons[type]||'❓';
-        $('modalIcon').style.background=colors[type]||colors.danger;
-        $('modalTitle').textContent=title;
-        $('modalMsg').textContent=msg;
-        $('modalConfirm').textContent=confirmTxt;
-        $('modalCancel').textContent=cancelTxt;
+        $('modalIcon').textContent=icons[type]||'❓';$('modalIcon').style.background=colors[type]||colors.danger;
+        $('modalTitle').textContent=title;$('modalMsg').textContent=msg;$('modalConfirm').textContent=confirmTxt;$('modalCancel').textContent=cancelTxt;
         const btnColors={danger:'btn-d',warning:'btn-w',info:'btn-i',success:'btn-s'};
         $('modalConfirm').className=`btn ${btnColors[type]||'btn-d'} btn-full`;
         $('modalOverlay').classList.add('open');
@@ -977,105 +859,52 @@ function abrirMais(){$('moreOverlay').classList.add('open');$('moreSheet').class
 function fecharMais(){$('moreOverlay').classList.remove('open');$('moreSheet').classList.remove('open');}
 function irMais(s){document.querySelectorAll('.more-btn').forEach(b=>b.classList.remove('active'));const mb=$(`mbtn-${s}`);if(mb)mb.classList.add('active');fecharMais();ir(s);}
 (function(){let sy=0;const sh=$('moreSheet');sh.addEventListener('touchstart',e=>{sy=e.touches[0].clientY;},{passive:true});sh.addEventListener('touchmove',e=>{if(e.touches[0].clientY-sy>70)fecharMais();},{passive:true});})();
-
-// ══════════════════════════════════════════
-// ATALHOS DE TECLADO
-// ══════════════════════════════════════════
-document.addEventListener('keydown',e=>{
-    if(e.ctrlKey&&e.key==='s'){e.preventDefault();if(!$('salvarBtn').disabled)salvarDados();}
-    if(e.key==='Escape'){modalResolve(false);fecharMais();}
-});
+document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='s'){e.preventDefault();if(!$('salvarBtn').disabled)salvarDados();}if(e.key==='Escape'){modalResolve(false);fecharMais();}});
 
 // ══════════════════════════════════════════
 // TIMER
 // ══════════════════════════════════════════
-let timerInterval=null, timerStart=null, timerPauseStart=null, timerPausedMs=0, timerRunning=false, timerPausado=false, timerPauses=[];
-
+let timerInterval=null,timerStart=null,timerPauseStart=null,timerPausedMs=0,timerRunning=false,timerPausado=false,timerPauses=[];
 function timerToggle(){
     if(!timerRunning){
-        timerStart=Date.now()-timerPausedMs;
-        timerRunning=true;timerPausado=false;timerPausedMs=0;timerPauses=[];
-        $('timerStartDisplay').textContent=new Date().toTimeString().slice(0,5);
-        $('timerEndDisplay').textContent='--:--';
-        $('timerStartBtn').innerHTML='<i class="fas fa-redo"></i> Reiniciar';
-        $('timerPauseBtn').disabled=false;
-        $('timerStopBtn').disabled=false;
-        $('timerStatus').className='timer-status running';
-        $('timerStatus').innerHTML='<i class="fas fa-circle"></i> Turno em andamento';
-        $('dashTimerStatus').style.display='block';
-        timerInterval=setInterval(updateTimer,1000);
-    } else {
+        timerStart=Date.now()-timerPausedMs;timerRunning=true;timerPausado=false;timerPausedMs=0;timerPauses=[];
+        $('timerStartDisplay').textContent=new Date().toTimeString().slice(0,5);$('timerEndDisplay').textContent='--:--';
+        $('timerStartBtn').innerHTML='<i class="fas fa-redo"></i> Reiniciar';$('timerPauseBtn').disabled=false;$('timerStopBtn').disabled=false;
+        $('timerStatus').className='timer-status running';$('timerStatus').innerHTML='<i class="fas fa-circle"></i> Turno em andamento';
+        $('dashTimerStatus').style.display='block';timerInterval=setInterval(updateTimer,1000);
+    }else{
         showModal('Reiniciar Timer','Isso irá apagar o turno atual. Deseja reiniciar?','warning').then(ok=>{
-            if(ok){clearInterval(timerInterval);timerRunning=false;timerPausado=false;timerPausedMs=0;timerPauses=[];timerStart=null;$('timerDisplay').textContent='00:00:00';$('timerStartDisplay').textContent='--:--';$('timerEndDisplay').textContent='--:--';$('timerStartBtn').innerHTML='<i class="fas fa-play"></i> Iniciar Turno';$('timerPauseBtn').disabled=true;$('timerStopBtn').disabled=true;$('timerStatus').className='timer-status idle';$('timerStatus').innerHTML='<i class="fas fa-circle"></i> Aguardando início';$('dashTimerStatus').style.display='none';$('pausesList').innerHTML='';}
+            if(ok){clearInterval(timerInterval);timerRunning=false;timerPausado=false;timerPausedMs=0;timerPauses=[];timerStart=null;
+                $('timerDisplay').textContent='00:00:00';$('timerStartDisplay').textContent='--:--';$('timerEndDisplay').textContent='--:--';
+                $('timerStartBtn').innerHTML='<i class="fas fa-play"></i> Iniciar Turno';$('timerPauseBtn').disabled=true;$('timerStopBtn').disabled=true;
+                $('timerStatus').className='timer-status idle';$('timerStatus').innerHTML='<i class="fas fa-circle"></i> Aguardando início';$('dashTimerStatus').style.display='none';}
         });
     }
 }
-
 function timerPause(){
-    if(!timerPausado){
-        timerPausado=true;timerPauseStart=Date.now();clearInterval(timerInterval);
-        $('timerPauseBtn').innerHTML='<i class="fas fa-play"></i> Retomar';
-        $('timerStatus').className='timer-status paused';
-        $('timerStatus').innerHTML='<i class="fas fa-pause-circle"></i> Pausado';
-    } else {
-        const pauseDur=Date.now()-timerPauseStart;
-        timerPauses.push({inicio:timerPauseStart,duracao:pauseDur});
-        timerPausedMs+=pauseDur;timerStart+=pauseDur;timerPausado=false;
-        $('timerPauseBtn').innerHTML='<i class="fas fa-pause"></i> Pausar';
-        $('timerStatus').className='timer-status running';
-        $('timerStatus').innerHTML='<i class="fas fa-circle"></i> Turno em andamento';
-        timerInterval=setInterval(updateTimer,1000);
-        renderPausesList();
-    }
+    if(!timerPausado){timerPausado=true;timerPauseStart=Date.now();clearInterval(timerInterval);$('timerPauseBtn').innerHTML='<i class="fas fa-play"></i> Retomar';$('timerStatus').className='timer-status paused';$('timerStatus').innerHTML='<i class="fas fa-pause-circle"></i> Pausado';}
+    else{const pd=Date.now()-timerPauseStart;timerPauses.push({inicio:timerPauseStart,duracao:pd});timerPausedMs+=pd;timerStart+=pd;timerPausado=false;$('timerPauseBtn').innerHTML='<i class="fas fa-pause"></i> Pausar';$('timerStatus').className='timer-status running';$('timerStatus').innerHTML='<i class="fas fa-circle"></i> Turno em andamento';timerInterval=setInterval(updateTimer,1000);renderPausesList();}
 }
-
-function updateTimer(){
-    const elapsed=Date.now()-timerStart;
-    const h=Math.floor(elapsed/3600000),m=Math.floor((elapsed%3600000)/60000),s=Math.floor((elapsed%60000)/1000);
-    const str=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    $('timerDisplay').textContent=str;
-    $('dashTimerTime').textContent=str;
-}
-
-function renderPausesList(){
-    $('pausesList').innerHTML=timerPauses.map((p,i)=>{
-        const d=Math.floor(p.duracao/60000);
-        return`<div class="tag tag-b" style="margin-bottom:.3rem"><i class="fas fa-pause"></i> Pausa ${i+1}: ${d}min</div>`;
-    }).join(' ');
-}
-
+function updateTimer(){const e=Date.now()-timerStart;const h=Math.floor(e/3600000),m=Math.floor((e%3600000)/60000),s=Math.floor((e%60000)/1000);const str=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;$('timerDisplay').textContent=str;$('dashTimerTime').textContent=str;}
+function renderPausesList(){$('pausesList').innerHTML=timerPauses.map((p,i)=>`<div class="tag tag-b" style="margin-bottom:.3rem"><i class="fas fa-pause"></i> Pausa ${i+1}: ${Math.floor(p.duracao/60000)}min</div>`).join(' ');}
 async function timerStop(){
     if(!timerRunning)return;
     const ok=await showModal('Finalizar Turno','Preencher a calculadora com os horários deste turno?','success','Sim, preencher!');
     if(!ok)return;
     clearInterval(timerInterval);timerRunning=false;
-    const now=new Date();
-    const endTime=now.toTimeString().slice(0,5);
-    $('timerEndDisplay').textContent=endTime;
-    $('timerStatus').className='timer-status idle';
-    $('timerStatus').innerHTML='<i class="fas fa-check-circle"></i> Turno finalizado';
-    $('timerStartBtn').innerHTML='<i class="fas fa-play"></i> Iniciar Turno';
-    $('timerPauseBtn').disabled=true;$('timerStopBtn').disabled=true;$('dashTimerStatus').style.display='none';
-    const startTime=$('timerStartDisplay').textContent;
-    const elapsed=Date.now()-timerStart;
+    const now=new Date(),endTime=now.toTimeString().slice(0,5);
+    $('timerEndDisplay').textContent=endTime;$('timerStatus').className='timer-status idle';$('timerStatus').innerHTML='<i class="fas fa-check-circle"></i> Turno finalizado';
+    $('timerStartBtn').innerHTML='<i class="fas fa-play"></i> Iniciar Turno';$('timerPauseBtn').disabled=true;$('timerStopBtn').disabled=true;$('dashTimerStatus').style.display='none';
+    const startTime=$('timerStartDisplay').textContent,elapsed=Date.now()-timerStart;
     timerHistorico.unshift({data:hoje(),inicio:startTime,fim:endTime,duracao:elapsed,pausas:timerPauses.length,timestamp:Date.now()});
-    if(timerHistorico.length>30)timerHistorico.pop();
-    saveData('timerHistorico',timerHistorico);
-    $('horaInicio').value=startTime;
-    $('horaFim').value=endTime;
-    $('data').value=hoje();
-    renderTimerHistorico();
-    toast('Horários preenchidos! Vá para Calcular.','success');
-    setTimeout(()=>ir('calculadora'),1500);
+    if(timerHistorico.length>30)timerHistorico.pop();saveData('timerHistorico',timerHistorico);
+    $('horaInicio').value=startTime;$('horaFim').value=endTime;$('data').value=hoje();
+    renderTimerHistorico();toast('Horários preenchidos! Vá para Calcular.','success');setTimeout(()=>ir('calculadora'),1500);
 }
-
 function renderTimerHistorico(){
     if(!timerHistorico.length){$('timerHistCard').style.display='none';return;}
     $('timerHistCard').style.display='block';
-    $('timerHistBody').innerHTML=timerHistorico.map(t=>{
-        const h=Math.floor(t.duracao/3600000),m=Math.floor((t.duracao%3600000)/60000);
-        return`<tr><td>${fmtData(t.data)}</td><td>${t.inicio}</td><td>${t.fim}</td><td>${h}h${String(m).padStart(2,'0')}min</td><td>${t.pausas} pausa(s)</td></tr>`;
-    }).join('');
+    $('timerHistBody').innerHTML=timerHistorico.map(t=>{const h=Math.floor(t.duracao/3600000),m=Math.floor((t.duracao%3600000)/60000);return`<tr><td>${fmtData(t.data)}</td><td>${t.inicio}</td><td>${t.fim}</td><td>${h}h${String(m).padStart(2,'0')}min</td><td>${t.pausas} pausa(s)</td></tr>`;}).join('');
 }
 
 // ══════════════════════════════════════════
@@ -1090,23 +919,16 @@ function initDashboard(){
     if(!historico.length){$('grSub').textContent='Comece registrando seu primeiro dia de trabalho.';}
     else{const lt=historico.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);$('grSub').textContent=`${historico.length} dias registrados • Lucro total: ${fmt(lt)}`;}
     const md=parseFloat(metas.diaria)||0,hs=hoje();
-    const rh=historico.find(r=>r.data===hs);
-    const lh=rh?parseFloat(rh.lucroLiquido):0;
-    if(md>0){
-        const pct=Math.min((lh/md)*100,100);
-        $('metaDiaTexto').textContent=`${fmt(lh)} de ${fmt(md)}`;
-        animateCounter('metaDiaValor',lh,true);$('metaDiaPct').textContent=`${pct.toFixed(0)}%`;
-        const bar=$('metaDiaBar');bar.style.width=pct+'%';
-        bar.style.background=pct>=100?'linear-gradient(90deg,#00b894,#00cec9)':pct>=60?'linear-gradient(90deg,#fdcb6e,#e17055)':'linear-gradient(90deg,#e17055,#d63031)';
-    }else{$('metaDiaTexto').textContent='Defina sua meta na aba Metas';$('metaDiaValor').textContent=rh?fmt(lh):'--';$('metaDiaPct').textContent='';$('metaDiaBar').style.width='0%';}
+    const rh=historico.find(r=>r.data===hs);const lh=rh?parseFloat(rh.lucroLiquido):0;
+    if(md>0){const pct=Math.min((lh/md)*100,100);$('metaDiaTexto').textContent=`${fmt(lh)} de ${fmt(md)}`;animateCounter('metaDiaValor',lh,true);$('metaDiaPct').textContent=`${pct.toFixed(0)}%`;const bar=$('metaDiaBar');bar.style.width=pct+'%';bar.style.background=pct>=100?'linear-gradient(90deg,#00b894,#00cec9)':pct>=60?'linear-gradient(90deg,#fdcb6e,#e17055)':'linear-gradient(90deg,#e17055,#d63031)';}
+    else{$('metaDiaTexto').textContent='Defina sua meta na aba Metas';$('metaDiaValor').textContent=rh?fmt(lh):'--';$('metaDiaPct').textContent='';$('metaDiaBar').style.width='0%';}
     if(rh){animateCounter('dHoje',parseFloat(rh.valorGanho),true);}else $('dHoje').textContent='--';
     $('dHojeKm').textContent=rh?`${rh.kmRodado} km`:'0 km';
     const sa=new Date();sa.setDate(sa.getDate()-6);
     const rs=historico.filter(r=>parseLocal(r.data)>=sa);
     if(rs.length)animateCounter('dSem',rs.reduce((a,r)=>a+parseFloat(r.valorGanho),0),true);else $('dSem').textContent='--';
     $('dSemDias').textContent=`${rs.length} dias`;
-    const ms=mesAtual();
-    const rm=historico.filter(r=>r.data.startsWith(ms));
+    const ms=mesAtual(),rm=historico.filter(r=>r.data.startsWith(ms));
     if(rm.length){animateCounter('dMes',rm.reduce((a,r)=>a+parseFloat(r.valorGanho),0),true);animateCounter('dLucroMes',rm.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0),true);}
     else{$('dMes').textContent='--';$('dLucroMes').textContent='--';}
     $('dMesDias').textContent=`${rm.length} dias`;
@@ -1115,58 +937,21 @@ function initDashboard(){
     const ul=[...historico].slice(0,5);
     $('dashUltimos').innerHTML=!ul.length?emptyState('inbox','Nenhum registro ainda','Toque em Calcular para começar'):ul.map(r=>`<div class="mrow" style="padding:.75rem 1.25rem"><div style="display:flex;align-items:center;gap:.75rem"><div style="min-width:80px;font-size:.8rem;font-weight:600;color:var(--text)">${fmtData(r.data)}</div>${plBadge(r.plataforma||'outro')}<span class="shift-badge ${getShiftClass(getShift(r.horaInicio))}">${getShiftLabel(getShift(r.horaInicio))}</span></div><div style="text-align:right"><div style="font-size:.85rem;font-weight:700;color:var(--secondary)">${fmt(r.valorGanho)}</div><div style="font-size:.7rem;color:var(--text-sub)">Lucro: ${fmt(r.lucroLiquido)}</div></div></div>`).join('');
 }
-
-function emptyState(icon,title,desc){
-    return`<div class="empty-state"><svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="75" r="60" fill="var(--border)"/><text x="100" y="95" text-anchor="middle" font-size="50">📭</text></svg><h3>${title}</h3><p>${desc}</p></div>`;
-}
-
-function animateCounter(id,target,isCurrency){
-    const el=$(id);if(!el)return;
-    const duration=800,steps=30,increment=target/steps;
-    let current=0,step=0;
-    const timer=setInterval(()=>{
-        step++;current=step>=steps?target:current+increment;
-        el.textContent=isCurrency?fmt(current):current.toFixed(0);
-        if(step>=steps)clearInterval(timer);
-    },duration/steps);
-}
-
+function emptyState(icon,title,desc){return`<div class="empty-state"><svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="75" r="60" fill="var(--border)"/><text x="100" y="95" text-anchor="middle" font-size="50">📭</text></svg><h3>${title}</h3><p>${desc}</p></div>`;}
+function animateCounter(id,target,isCurrency){const el=$(id);if(!el)return;const duration=800,steps=30,increment=target/steps;let current=0,step=0;const timer=setInterval(()=>{step++;current=step>=steps?target:current+increment;el.textContent=isCurrency?fmt(current):current.toFixed(0);if(step>=steps)clearInterval(timer);},duration/steps);}
 function renderDashChart(){
-    const ctx=$('dashChart').getContext('2d');
-    if(dashChart)dashChart.destroy();
+    const ctx=$('dashChart').getContext('2d');if(dashChart)dashChart.destroy();
     const d7=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);d7.push(d.toISOString().split('T')[0]);}
-    const dk=document.documentElement.classList.contains('dark');
-    const tc=dk?'#94a3b8':'#546e8a',gc=dk?'#2d4a6e':'#e2e8f0';
-    dashChart=new Chart(ctx,{type:'bar',data:{labels:d7.map(d=>fmtData(d).slice(0,5)),datasets:[
-        {label:'Ganho',data:d7.map(d=>{const r=historico.find(h=>h.data===d);return r?parseFloat(r.valorGanho):0;}),backgroundColor:'rgba(45,90,142,0.7)',borderColor:'#2d5a8e',borderWidth:1,borderRadius:6},
-        {label:'Lucro',data:d7.map(d=>{const r=historico.find(h=>h.data===d);return r?parseFloat(r.lucroLiquido):0;}),backgroundColor:'rgba(0,184,148,0.7)',borderColor:'#00b894',borderWidth:1,borderRadius:6}
-    ]},options:{responsive:true,plugins:{legend:{labels:{color:tc,font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc,callback:v=>fmt(v)},grid:{color:gc}}}}});
+    const dk=document.documentElement.classList.contains('dark');const tc=dk?'#94a3b8':'#546e8a',gc=dk?'#2d4a6e':'#e2e8f0';
+    dashChart=new Chart(ctx,{type:'bar',data:{labels:d7.map(d=>fmtData(d).slice(0,5)),datasets:[{label:'Ganho',data:d7.map(d=>{const r=historico.find(h=>h.data===d);return r?parseFloat(r.valorGanho):0;}),backgroundColor:'rgba(45,90,142,0.7)',borderColor:'#2d5a8e',borderWidth:1,borderRadius:6},{label:'Lucro',data:d7.map(d=>{const r=historico.find(h=>h.data===d);return r?parseFloat(r.lucroLiquido):0;}),backgroundColor:'rgba(0,184,148,0.7)',borderColor:'#00b894',borderWidth:1,borderRadius:6}]},options:{responsive:true,plugins:{legend:{labels:{color:tc,font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc,callback:v=>fmt(v)},grid:{color:gc}}}}});
 }
-
-function plBadge(p){
-    const m={uber:'p-uber','99':'p-99',indrive:'p-indrive',bolt:'p-bolt',outro:'p-outro'};
-    const l={uber:'Uber','99':'99',indrive:'InDrive',bolt:'Bolt',outro:'Outro'};
-    const ic={uber:'🚗','99':'🟡',indrive:'🟢',bolt:'⚡',outro:'🔘'};
-    return`<span class="pbadge ${m[p]||'p-outro'}">${ic[p]||'🔘'} ${l[p]||p||'Outro'}</span>`;
-}
+function plBadge(p){const m={uber:'p-uber','99':'p-99',indrive:'p-indrive',bolt:'p-bolt',outro:'p-outro'};const l={uber:'Uber','99':'99',indrive:'InDrive',bolt:'Bolt',outro:'Outro'};const ic={uber:'🚗','99':'🟡',indrive:'🟢',bolt:'⚡',outro:'🔘'};return`<span class="pbadge ${m[p]||'p-outro'}">${ic[p]||'🔘'} ${l[p]||p||'Outro'}</span>`;}
 
 // ══════════════════════════════════════════
-// AUTO-SAVE (RASCUNHO)
+// AUTO-SAVE
 // ══════════════════════════════════════════
-function autoSave(){
-    clearTimeout(draftTimer);
-    draftTimer=setTimeout(()=>{
-        const d={data:$('data').value,valorGanho:$('valorGanho').value,horaInicio:$('horaInicio').value,horaFim:$('horaFim').value,kmRodado:$('kmRodado').value,consumoCarro:$('consumoCarro').value,aluguelCarro:$('aluguelCarro').value,valorCombustivel:$('valorCombustivel').value};
-        const filled=Object.values(d).some(v=>v);
-        if(filled){saveData('rascunho',d);$('draftBar').classList.add('show');}
-    },1500);
-}
-function restaurarRascunho(){
-    const d=loadData('rascunho',null);
-    if(!d)return;
-    Object.keys(d).forEach(k=>{if($(k))$(k).value=d[k];});
-    toast('Rascunho restaurado!','success');limparRascunho();
-}
+function autoSave(){clearTimeout(draftTimer);draftTimer=setTimeout(()=>{const d={data:$('data').value,valorGanho:$('valorGanho').value,horaInicio:$('horaInicio').value,horaFim:$('horaFim').value,kmRodado:$('kmRodado').value,consumoCarro:$('consumoCarro').value,aluguelCarro:$('aluguelCarro').value,valorCombustivel:$('valorCombustivel').value};const filled=Object.values(d).some(v=>v);if(filled){saveData('rascunho',d);$('draftBar').classList.add('show');}},1500);}
+function restaurarRascunho(){const d=loadData('rascunho',null);if(!d)return;Object.keys(d).forEach(k=>{if($(k))$(k).value=d[k];});toast('Rascunho restaurado!','success');limparRascunho();}
 function limparRascunho(){localStorage.removeItem('rascunho');$('draftBar').classList.remove('show');}
 if(loadData('rascunho',null)){setTimeout(()=>$('draftBar').classList.add('show'),2000);}
 
@@ -1174,10 +959,8 @@ if(loadData('rascunho',null)){setTimeout(()=>$('draftBar').classList.add('show')
 // CALCULADORA
 // ══════════════════════════════════════════
 function validarEntradas(){
-    const vg=parseFloat($('valorGanho').value);
-    const hi=$('horaInicio').value,hf=$('horaFim').value;
-    const km=parseFloat($('kmRodado').value),cons=parseFloat($('consumoCarro').value);
-    const ds=parseInt($('diasSemanaCalc').value);
+    const vg=parseFloat($('valorGanho').value),hi=$('horaInicio').value,hf=$('horaFim').value;
+    const km=parseFloat($('kmRodado').value),cons=parseFloat($('consumoCarro').value),ds=parseInt($('diasSemanaCalc').value);
     if(isNaN(vg)||vg<=0){toast('Valor ganho deve ser maior que zero.','error');return false;}
     const ini=new Date(`1970-01-01T${hi}`),fim=new Date(`1970-01-01T${hf}`);
     if(fim<=ini){toast('Horário de fim deve ser maior que o início.','error');return false;}
@@ -1187,338 +970,157 @@ function validarEntradas(){
     if(isNaN(ds)||ds<1||ds>7){toast('Dias deve ser entre 1 e 7.','error');return false;}
     return true;
 }
-
 function calcularGanhos(){
     const hi=$('horaInicio').value,hf=$('horaFim').value;
     const ini=new Date(`1970-01-01T${hi}`),fim=new Date(`1970-01-01T${hf}`);
-    const horas=(fim-ini)/(1000*60*60);
-    if(horas>24){toast('Período não pode exceder 24h.','error');return;}
+    const horas=(fim-ini)/(1000*60*60);if(horas>24){toast('Período não pode exceder 24h.','error');return;}
     const vg=parseFloat($('valorGanho').value),km=parseFloat($('kmRodado').value);
     const cons=parseFloat($('consumoCarro').value),alug=parseFloat($('aluguelCarro').value)||0;
     const comb=parseFloat($('valorCombustivel').value),ds=parseInt($('diasSemanaCalc').value)||6;
-    const lit=km/cons,cc=lit*comb,ct=cc+alug,luc=vg-ct;
-    const turno=getShift(hi);
-    $('resGanho').textContent=fmt(vg);$('resHora').textContent=fmt(vg/horas);
-    $('resKm').textContent=fmt(vg/km);$('resCusto').textContent=fmt(ct);
-    $('resLucro').textContent=fmt(luc);
+    const lit=km/cons,cc=lit*comb,ct=cc+alug,luc=vg-ct,turno=getShift(hi);
+    $('resGanho').textContent=fmt(vg);$('resHora').textContent=fmt(vg/horas);$('resKm').textContent=fmt(vg/km);$('resCusto').textContent=fmt(ct);$('resLucro').textContent=fmt(luc);
     $('resEst').textContent=`Estimativa semanal (${ds} dias): ${fmt(luc*ds)}`;
-    $('resDetalhes').innerHTML=`
-        <div class="mrow"><span class="ml">Data</span><span class="mv">${fmtData($('data').value)}</span></div>
-        <div class="mrow"><span class="ml">Turno</span><span class="mv"><span class="shift-badge ${getShiftClass(turno)}">${getShiftLabel(turno)}</span></span></div>
-        <div class="mrow"><span class="ml">Horário</span><span class="mv">${hi} → ${hf} (${horas.toFixed(1)}h)</span></div>
-        <div class="mrow"><span class="ml">KM Rodado</span><span class="mv">${km.toFixed(1)} km</span></div>
-        <div class="mrow"><span class="ml">Consumo</span><span class="mv">${cons.toFixed(1)} km/L</span></div>
-        <div class="mrow"><span class="ml">Combustível</span><span class="mv">${lit.toFixed(2)} L (${fmt(cc)})</span></div>
-        <div class="mrow"><span class="ml">Aluguel</span><span class="mv">${fmt(alug)}</span></div>
-        <div class="mrow"><span class="ml">Custo Total</span><span class="mv" style="color:var(--danger)">${fmt(ct)}</span></div>
-        <div class="mrow"><span class="ml">Lucro Líquido</span><span class="mv" style="color:var(--secondary);font-size:1rem">${fmt(luc)}</span></div>`;
-    $('resultCalc').style.display='block';$('salvarBtn').disabled=false;
-    limparRascunho();
+    $('resDetalhes').innerHTML=`<div class="mrow"><span class="ml">Data</span><span class="mv">${fmtData($('data').value)}</span></div><div class="mrow"><span class="ml">Turno</span><span class="mv"><span class="shift-badge ${getShiftClass(turno)}">${getShiftLabel(turno)}</span></span></div><div class="mrow"><span class="ml">Horário</span><span class="mv">${hi} → ${hf} (${horas.toFixed(1)}h)</span></div><div class="mrow"><span class="ml">KM Rodado</span><span class="mv">${km.toFixed(1)} km</span></div><div class="mrow"><span class="ml">Consumo</span><span class="mv">${cons.toFixed(1)} km/L</span></div><div class="mrow"><span class="ml">Combustível</span><span class="mv">${lit.toFixed(2)} L (${fmt(cc)})</span></div><div class="mrow"><span class="ml">Aluguel</span><span class="mv">${fmt(alug)}</span></div><div class="mrow"><span class="ml">Custo Total</span><span class="mv" style="color:var(--danger)">${fmt(ct)}</span></div><div class="mrow"><span class="ml">Lucro Líquido</span><span class="mv" style="color:var(--secondary);font-size:1rem">${fmt(luc)}</span></div>`;
+    $('resultCalc').style.display='block';$('salvarBtn').disabled=false;limparRascunho();
 }
-
 function salvarDados(){
-    const data=$('data').value,vg=parseFloat($('valorGanho').value);
-    const hi=$('horaInicio').value,hf=$('horaFim').value;
-    const km=parseFloat($('kmRodado').value),cons=parseFloat($('consumoCarro').value);
-    const alug=parseFloat($('aluguelCarro').value)||0,comb=parseFloat($('valorCombustivel').value);
-    const ds=parseInt($('diasSemanaCalc').value)||6,plat=$('plataforma').value;
-    const lit=km/cons,cc=lit*comb,ct=cc+alug,luc=vg-ct,ts=new Date(data).getTime();
-    const turno=getShift(hi);
+    const data=$('data').value,vg=parseFloat($('valorGanho').value),hi=$('horaInicio').value,hf=$('horaFim').value;
+    const km=parseFloat($('kmRodado').value),cons=parseFloat($('consumoCarro').value),alug=parseFloat($('aluguelCarro').value)||0;
+    const comb=parseFloat($('valorCombustivel').value),ds=parseInt($('diasSemanaCalc').value)||6,plat=$('plataforma').value;
+    const lit=km/cons,cc=lit*comb,ct=cc+alug,luc=vg-ct,ts=new Date(data).getTime(),turno=getShift(hi);
     const reg={data,plataforma:plat,turno,valorGanho:vg.toFixed(2),horaInicio:hi,horaFim:hf,kmRodado:km.toFixed(1),consumoCarro:cons.toFixed(1),aluguelCarro:alug.toFixed(2),valorCombustivel:comb.toFixed(2),custoCombustivel:cc.toFixed(2),custoTotal:ct.toFixed(2),lucroLiquido:luc.toFixed(2),estimativaSemanal:(luc*ds).toFixed(2),timestamp:ts};
-    if(editandoTimestamp!==null){
-        if(historico.some(r=>r.timestamp===ts&&r.timestamp!==editandoTimestamp)){toast('Já existe outro registro para esta data.','error');return false;}
-        const idx=historico.findIndex(r=>r.timestamp===editandoTimestamp);if(idx!==-1)historico.splice(idx,1);
-        editandoTimestamp=null;$('editAlert').style.display='none';$('salvarBtnTxt').textContent='Salvar';
-    }else{if(historico.some(r=>r.timestamp===ts)){toast('Registro para esta data já existe.','error');return false;}}
-    historico.push(reg);historico.sort((a,b)=>b.timestamp-a.timestamp);
-    saveData('historico',historico);limparFormulario();$('salvarBtn').disabled=true;
-    toast('Dados salvos com sucesso! 🎉','success');return true;
+    if(editandoTimestamp!==null){if(historico.some(r=>r.timestamp===ts&&r.timestamp!==editandoTimestamp)){toast('Já existe outro registro para esta data.','error');return false;}const idx=historico.findIndex(r=>r.timestamp===editandoTimestamp);if(idx!==-1)historico.splice(idx,1);editandoTimestamp=null;$('editAlert').style.display='none';$('salvarBtnTxt').textContent='Salvar';}
+    else{if(historico.some(r=>r.timestamp===ts)){toast('Registro para esta data já existe.','error');return false;}}
+    historico.push(reg);historico.sort((a,b)=>b.timestamp-a.timestamp);saveData('historico',historico);limparFormulario();$('salvarBtn').disabled=true;toast('Dados salvos! 🎉','success');return true;
 }
-
-function limparFormulario(){
-    ['data','valorGanho','horaInicio','horaFim','kmRodado','consumoCarro','aluguelCarro','valorCombustivel'].forEach(id=>$(id).value='');
-    $('resultCalc').style.display='none';$('data').value=hoje();limparRascunho();
-}
-
-function editarRegistro(ts){
-    const r=historico.find(x=>x.timestamp===ts);if(!r)return;
-    editandoTimestamp=ts;
-    $('data').value=r.data;$('valorGanho').value=r.valorGanho;$('horaInicio').value=r.horaInicio;
-    $('horaFim').value=r.horaFim;$('kmRodado').value=r.kmRodado;$('consumoCarro').value=r.consumoCarro;
-    $('aluguelCarro').value=r.aluguelCarro;$('valorCombustivel').value=r.valorCombustivel;
-    if(r.plataforma)$('plataforma').value=r.plataforma;
-    $('editAlert').style.display='flex';$('salvarBtnTxt').textContent='Atualizar';$('salvarBtn').disabled=false;
-    ir('calculadora');calcularGanhos();
-}
+function limparFormulario(){['data','valorGanho','horaInicio','horaFim','kmRodado','consumoCarro','aluguelCarro','valorCombustivel'].forEach(id=>$(id).value='');$('resultCalc').style.display='none';$('data').value=hoje();limparRascunho();}
+function editarRegistro(ts){const r=historico.find(x=>x.timestamp===ts);if(!r)return;editandoTimestamp=ts;$('data').value=r.data;$('valorGanho').value=r.valorGanho;$('horaInicio').value=r.horaInicio;$('horaFim').value=r.horaFim;$('kmRodado').value=r.kmRodado;$('consumoCarro').value=r.consumoCarro;$('aluguelCarro').value=r.aluguelCarro;$('valorCombustivel').value=r.valorCombustivel;if(r.plataforma)$('plataforma').value=r.plataforma;$('editAlert').style.display='flex';$('salvarBtnTxt').textContent='Atualizar';$('salvarBtn').disabled=false;ir('calculadora');calcularGanhos();}
 function cancelarEdicao(){editandoTimestamp=null;$('editAlert').style.display='none';$('salvarBtnTxt').textContent='Salvar';$('salvarBtn').disabled=true;limparFormulario();}
-
-// WhatsApp Share
-function compartilharWhatsApp(){
-    const vg=$('resGanho').textContent,luc=$('resLucro').textContent,km=$('resKm').textContent;
-    const data=fmtData($('data').value);
-    const msg=`🚗 *MotoGanhos Pro* — ${data}\n💰 Ganho: ${vg}\n📍 Por KM: ${km}\n✅ Lucro Líquido: ${luc}\n\nGerado pelo MotoGanhos Pro`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
-}
+function compartilharWhatsApp(){const vg=$('resGanho').textContent,luc=$('resLucro').textContent,km=$('resKm').textContent,data=fmtData($('data').value);const msg=`🚗 *MotoGanhos Pro* — ${data}\n💰 Ganho: ${vg}\n📍 Por KM: ${km}\n✅ Lucro Líquido: ${luc}\n\nMotoGanhos Pro`;window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');}
 
 // ══════════════════════════════════════════
 // UNDO DELETE
 // ══════════════════════════════════════════
-function apagarRegistro(ts){
-    showModal('Apagar Registro','Tem certeza? Você pode desfazer por 5 segundos.','danger','Apagar').then(ok=>{
-        if(!ok)return;
-        const idx=historico.findIndex(r=>r.timestamp===ts);
-        if(idx===-1)return;
-        undoBuffer={type:'historico',data:[...historico],idx};
-        historico.splice(idx,1);saveData('historico',historico);atualizarHistorico();
-        toastWithUndo('Registro apagado.');
-    });
-}
-
-function toastWithUndo(msg){
-    clearTimeout(undoTimer);
-    $('toastMsg').textContent=msg;$('toastIcon').className='fas fa-trash';
-    $('toastUndo').style.display='inline';
-    $('toast').className='warning show';
-    undoTimer=setTimeout(()=>{$('toast').classList.remove('show');$('toastUndo').style.display='none';undoBuffer=null;},5000);
-}
-
-function undoDelete(){
-    if(!undoBuffer)return;
-    clearTimeout(undoTimer);
-    if(undoBuffer.type==='historico'){historico=undoBuffer.data;saveData('historico',historico);atualizarHistorico();}
-    else if(undoBuffer.type==='despesa'){despesas=undoBuffer.data;saveData('despesas',despesas);renderDespesas();renderDespResumo();}
-    undoBuffer=null;$('toastUndo').style.display='none';
-    toast('Ação desfeita!','success');
-}
+function apagarRegistro(ts){showModal('Apagar Registro','Tem certeza? Você pode desfazer por 5 segundos.','danger','Apagar').then(ok=>{if(!ok)return;const idx=historico.findIndex(r=>r.timestamp===ts);if(idx===-1)return;undoBuffer={type:'historico',data:[...historico]};historico.splice(idx,1);saveData('historico',historico);atualizarHistorico();toastWithUndo('Registro apagado.');});}
+function toastWithUndo(msg){clearTimeout(undoTimer);$('toastMsg').textContent=msg;$('toastIcon').className='fas fa-trash';$('toastUndo').style.display='inline';$('toast').className='warning show';undoTimer=setTimeout(()=>{$('toast').classList.remove('show');$('toastUndo').style.display='none';undoBuffer=null;},5000);}
+function undoDelete(){if(!undoBuffer)return;clearTimeout(undoTimer);if(undoBuffer.type==='historico'){historico=undoBuffer.data;saveData('historico',historico);atualizarHistorico();}else if(undoBuffer.type==='despesa'){despesas=undoBuffer.data;saveData('despesas',despesas);renderDespesas();renderDespResumo();}undoBuffer=null;$('toastUndo').style.display='none';toast('Ação desfeita!','success');}
 
 // ══════════════════════════════════════════
 // HISTÓRICO
 // ══════════════════════════════════════════
 function atualizarHistorico(dados=null){
-    const d=dados||historico;
-    renderTabelaHistorico(d);
+    const d=dados||historico;renderTabelaHistorico(d);
     const gc=$('graficoContainer'),se=$('estatisticasHistorico');
     if(!d.length){gc.style.display='none';se.innerHTML='';return;}
     gc.style.display='block';renderGraficoHistorico(d);
     const tot=d.reduce((a,r)=>{const h=calcH(r.horaInicio,r.horaFim);return{g:a.g+parseFloat(r.valorGanho),k:a.k+parseFloat(r.kmRodado),l:a.l+parseFloat(r.lucroLiquido),al:a.al+parseFloat(r.aluguelCarro),h:a.h+h,c:a.c+parseFloat(r.custoCombustivel||0),li:a.li+(parseFloat(r.kmRodado)/parseFloat(r.consumoCarro)),d:a.d+1};},{g:0,k:0,l:0,al:0,h:0,c:0,li:0,d:0});
     se.innerHTML=`<div class="card fade-up" style="margin-top:1rem"><div class="card-hdr"><i class="fas fa-chart-pie" style="color:var(--secondary)"></i><span class="card-hdr-title">Estatísticas ${dados?'do Período':'Gerais'}</span></div><div class="card-body"><div class="g4" style="margin-bottom:.85rem"><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-calendar"></i></div><div class="sl">Dias</div><div class="sv">${tot.d}</div></div><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Ganho Total</div><div class="sv">${fmt(tot.g)}</div></div><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-hand-holding-usd"></i></div><div class="sl">Lucro Total</div><div class="sv">${fmt(tot.l)}</div></div><div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-receipt"></i></div><div class="sl">Custo Total</div><div class="sv">${fmt(tot.g-tot.l)}</div></div></div><div class="g4"><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-road"></i></div><div class="sl">KM Total</div><div class="sv">${tot.k.toFixed(0)}<span style="font-size:.7rem"> km</span></div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-tachometer-alt"></i></div><div class="sl">Média/KM</div><div class="sv">${fmt(tot.g/tot.k)}</div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-clock"></i></div><div class="sl">Horas</div><div class="sv">${tot.h.toFixed(1)}<span style="font-size:.7rem"> h</span></div></div><div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-gas-pump"></i></div><div class="sl">Combustível</div><div class="sv">${fmt(tot.c)}</div><div class="ss">${tot.li.toFixed(1)} L</div></div></div></div></div>`;
 }
-
 function renderTabelaHistorico(dados){
     const c=$('histCorpo');
     if(!dados||!dados.length){c.innerHTML=`<tr><td colspan="12">${emptyState('inbox','Nenhum registro encontrado','Adicione registros na aba Calcular')}</td></tr>`;return;}
-    c.innerHTML=dados.map(r=>{
-        const h=calcH(r.horaInicio,r.horaFim),sh=getShift(r.horaInicio);
-        return`<tr><td>${fmtData(r.data)}</td><td>${plBadge(r.plataforma||'outro')}</td><td><span class="shift-badge ${getShiftClass(sh)}">${getShiftLabel(sh).split(' ')[0]}</span></td><td style="color:var(--secondary);font-weight:600">${fmt(r.valorGanho)}</td><td>${r.horaInicio}</td><td>${r.horaFim}</td><td>${r.kmRodado} km</td><td>${fmt(parseFloat(r.valorGanho)/parseFloat(r.kmRodado))}</td><td>${fmt(parseFloat(r.valorGanho)/h)}</td><td style="color:var(--danger)">${fmt(r.custoTotal||0)}</td><td style="color:var(--secondary);font-weight:600">${fmt(r.lucroLiquido)}</td><td><div style="display:flex;gap:.3rem"><button class="btn btn-i btn-sm" onclick="editarRegistro(${r.timestamp})"><i class="fas fa-edit"></i></button><button class="btn btn-d btn-sm" onclick="apagarRegistro(${r.timestamp})"><i class="fas fa-trash"></i></button><button class="btn btn-wa btn-sm" onclick="compartilharDia(${r.timestamp})"><i class="fab fa-whatsapp"></i></button></div></td></tr>`;
-    }).join('');
+    c.innerHTML=dados.map(r=>{const h=calcH(r.horaInicio,r.horaFim),sh=getShift(r.horaInicio);return`<tr><td>${fmtData(r.data)}</td><td>${plBadge(r.plataforma||'outro')}</td><td><span class="shift-badge ${getShiftClass(sh)}">${getShiftLabel(sh).split(' ')[0]}</span></td><td style="color:var(--secondary);font-weight:600">${fmt(r.valorGanho)}</td><td>${r.horaInicio}</td><td>${r.horaFim}</td><td>${r.kmRodado} km</td><td>${fmt(parseFloat(r.valorGanho)/parseFloat(r.kmRodado))}</td><td>${fmt(parseFloat(r.valorGanho)/h)}</td><td style="color:var(--danger)">${fmt(r.custoTotal||0)}</td><td style="color:var(--secondary);font-weight:600">${fmt(r.lucroLiquido)}</td><td><div style="display:flex;gap:.3rem"><button class="btn btn-i btn-sm" onclick="editarRegistro(${r.timestamp})"><i class="fas fa-edit"></i></button><button class="btn btn-d btn-sm" onclick="apagarRegistro(${r.timestamp})"><i class="fas fa-trash"></i></button><button class="btn btn-wa btn-sm" onclick="compartilharDia(${r.timestamp})"><i class="fab fa-whatsapp"></i></button></div></td></tr>`;}).join('');
 }
-
-function compartilharDia(ts){
-    const r=historico.find(x=>x.timestamp===ts);if(!r)return;
-    const msg=`🚗 *MotoGanhos Pro* — ${fmtData(r.data)}\n💰 Ganho: ${fmt(r.valorGanho)}\n🛣️ KM: ${r.kmRodado} km\n✅ Lucro: ${fmt(r.lucroLiquido)}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
-}
-
-function renderGraficoHistorico(dados){
-    const ctx=$('graficoGanhos').getContext('2d');
-    if(grafico)grafico.destroy();
-    const o=[...dados].sort((a,b)=>a.timestamp-b.timestamp);
-    const dk=document.documentElement.classList.contains('dark');
-    const tc=dk?'#94a3b8':'#546e8a',gc=dk?'#2d4a6e':'#e2e8f0';
-    grafico=new Chart(ctx,{type:'bar',data:{labels:o.map(r=>fmtData(r.data).slice(0,5)),datasets:[{label:'Ganho',data:o.map(r=>parseFloat(r.valorGanho)),backgroundColor:'rgba(45,90,142,0.7)',borderColor:'#2d5a8e',borderWidth:1,borderRadius:5},{label:'Lucro',data:o.map(r=>parseFloat(r.lucroLiquido)),backgroundColor:'rgba(0,184,148,0.7)',borderColor:'#00b894',borderWidth:1,borderRadius:5},{label:'Despesas',data:o.map(r=>parseFloat(r.custoTotal||0)),backgroundColor:'rgba(225,112,85,0.6)',borderColor:'#e17055',borderWidth:1,borderRadius:5}]},options:{responsive:true,plugins:{legend:{labels:{color:tc,font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc,callback:v=>fmt(v)},grid:{color:gc}}}}});
-}
-
-function filtrarHistorico(){
-    const vi=$('filtroInicio').value,vf=$('filtroFim').value;
-    if(!vi||!vf){toast('Preencha as duas datas.','warning');return;}
-    const ini=parseLocal(vi),fim=parseLocal(vf);
-    if(ini>fim){toast('Data início maior que fim.','error');return;}
-    atualizarHistorico(historico.filter(r=>{const d=parseLocal(r.data);return d>=ini&&d<=fim;}));
-}
+function compartilharDia(ts){const r=historico.find(x=>x.timestamp===ts);if(!r)return;const msg=`🚗 *MotoGanhos Pro* — ${fmtData(r.data)}\n💰 Ganho: ${fmt(r.valorGanho)}\n🛣️ KM: ${r.kmRodado} km\n✅ Lucro: ${fmt(r.lucroLiquido)}`;window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');}
+function renderGraficoHistorico(dados){const ctx=$('graficoGanhos').getContext('2d');if(grafico)grafico.destroy();const o=[...dados].sort((a,b)=>a.timestamp-b.timestamp);const dk=document.documentElement.classList.contains('dark');const tc=dk?'#94a3b8':'#546e8a',gc=dk?'#2d4a6e':'#e2e8f0';grafico=new Chart(ctx,{type:'bar',data:{labels:o.map(r=>fmtData(r.data).slice(0,5)),datasets:[{label:'Ganho',data:o.map(r=>parseFloat(r.valorGanho)),backgroundColor:'rgba(45,90,142,0.7)',borderColor:'#2d5a8e',borderWidth:1,borderRadius:5},{label:'Lucro',data:o.map(r=>parseFloat(r.lucroLiquido)),backgroundColor:'rgba(0,184,148,0.7)',borderColor:'#00b894',borderWidth:1,borderRadius:5},{label:'Despesas',data:o.map(r=>parseFloat(r.custoTotal||0)),backgroundColor:'rgba(225,112,85,0.6)',borderColor:'#e17055',borderWidth:1,borderRadius:5}]},options:{responsive:true,plugins:{legend:{labels:{color:tc,font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc,callback:v=>fmt(v)},grid:{color:gc}}}}});}
+function filtrarHistorico(){const vi=$('filtroInicio').value,vf=$('filtroFim').value;if(!vi||!vf){toast('Preencha as duas datas.','warning');return;}const ini=parseLocal(vi),fim=parseLocal(vf);if(ini>fim){toast('Data início maior que fim.','error');return;}atualizarHistorico(historico.filter(r=>{const d=parseLocal(r.data);return d>=ini&&d<=fim;}));}
 function limparFiltro(){$('filtroInicio').value='';$('filtroFim').value='';atualizarHistorico();}
-
-function exportarCSV(){
-    if(!historico.length){toast('Sem dados.','warning');return;}
-    const h=['Data','Plataforma','Turno','Ganho','Início','Fim','KM','KM/L','Aluguel','Combustível','CustoTotal','LucroLíquido'];
-    const l=historico.map(r=>[r.data,r.plataforma||'',r.turno||'',r.valorGanho,r.horaInicio,r.horaFim,r.kmRodado,r.consumoCarro,r.aluguelCarro,r.valorCombustivel,r.custoTotal,r.lucroLiquido].join(';'));
-    const b=new Blob(['\uFEFF'+[h.join(';'),...l].join('\n')],{type:'text/csv;charset=utf-8;'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`motoganhos_${hoje()}.csv`;a.click();
-    toast('CSV exportado!','success');
-}
-function exportarBackup(){
-    if(!historico.length){toast('Sem dados.','warning');return;}
-    const b=new Blob([JSON.stringify({historico,abastecimentos,manutencoes,metas,despesas,agenda},null,2)],{type:'application/json'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`backup_${hoje()}.json`;a.click();
-    toast('Backup exportado!','success');
-}
-function importarBackup(input){
-    const f=input.files[0];if(!f)return;
-    const r=new FileReader();
-    r.onload=e=>{
-        try{
-            const d=JSON.parse(e.target.result);
-            showModal('Importar Backup','Os dados atuais serão substituídos. Continuar?','warning','Importar').then(ok=>{
-                if(!ok)return;
-                if(d.historico&&Array.isArray(d.historico)){historico=d.historico.filter(validarRegistro);saveData('historico',historico);}
-                if(d.abastecimentos){abastecimentos=d.abastecimentos;saveData('abastecimentos',abastecimentos);}
-                if(d.manutencoes){manutencoes=d.manutencoes;saveData('manutencoes',manutencoes);}
-                if(d.metas){metas=d.metas;saveData('metas',metas);}
-                if(d.despesas){despesas=d.despesas;saveData('despesas',despesas);}
-                if(d.agenda){agenda=d.agenda;saveData('agenda',agenda);}
-                toast('Backup restaurado!','success');atualizarHistorico();
-            });
-        }catch{toast('Erro ao ler o arquivo.','error');}
-    };
-    r.readAsText(f);input.value='';
-}
+function exportarCSV(){if(!historico.length){toast('Sem dados.','warning');return;}const h=['Data','Plataforma','Turno','Ganho','Início','Fim','KM','KM/L','Aluguel','Combustível','CustoTotal','LucroLíquido'];const l=historico.map(r=>[r.data,r.plataforma||'',r.turno||'',r.valorGanho,r.horaInicio,r.horaFim,r.kmRodado,r.consumoCarro,r.aluguelCarro,r.valorCombustivel,r.custoTotal,r.lucroLiquido].join(';'));const b=new Blob(['\uFEFF'+[h.join(';'),...l].join('\n')],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`motoganhos_${hoje()}.csv`;a.click();toast('CSV exportado!','success');}
+function exportarBackup(){if(!historico.length){toast('Sem dados.','warning');return;}const b=new Blob([JSON.stringify({historico,abastecimentos,manutencoes,metas,despesas,agenda},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`backup_${hoje()}.json`;a.click();toast('Backup exportado!','success');}
+function importarBackup(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);showModal('Importar Backup','Os dados atuais serão substituídos. Continuar?','warning','Importar').then(ok=>{if(!ok)return;if(d.historico&&Array.isArray(d.historico)){historico=d.historico.filter(validarRegistro);saveData('historico',historico);}if(d.abastecimentos){abastecimentos=d.abastecimentos;saveData('abastecimentos',abastecimentos);}if(d.manutencoes){manutencoes=d.manutencoes;saveData('manutencoes',manutencoes);}if(d.metas){metas=d.metas;saveData('metas',metas);}if(d.despesas){despesas=d.despesas;saveData('despesas',despesas);}if(d.agenda){agenda=d.agenda;saveData('agenda',agenda);}toast('Backup restaurado!','success');atualizarHistorico();});}catch{toast('Erro ao ler o arquivo.','error');}};r.readAsText(f);input.value='';}
 
 // ══════════════════════════════════════════
-// CUSTO KM + PONTO DE EQUILÍBRIO
+// CUSTO KM
 // ══════════════════════════════════════════
 function calcularCustoKM(){
     const alug=parseFloat($('aluguelCarroCusto').value)||0,prest=parseFloat($('prestacaoCarro').value)||0;
     const dm=parseFloat($('despesasMedia').value)||0,dd=parseFloat($('despesasDiarias').value)||0;
     const cons=parseFloat($('consumoCarroCusto').value),comb=parseFloat($('valorCombustivelCusto').value);
     const km=parseFloat($('kmRodadoCusto').value),vkm=parseFloat($('valorPorKmCorrida').value)||2;
-    if(isNaN(cons)||cons<=0){toast('Consumo inválido.','error');return;}
-    if(isNaN(km)||km<=0){toast('KM inválido.','error');return;}
-    const lit=km/cons,cc=lit*comb,ct=alug+prest+dm+cc+dd;
-    const custoKM=ct/km,vliq=(vkm*km)-ct;
-    const kmEquilibrio=ct/vkm;
-    const horasEquilibrio=kmEquilibrio/30;
-    $('resCustoKM').textContent=fmt(custoKM);
-    $('resDespDiarias').textContent=fmt(ct);
-    $('resValorLiq').textContent=fmt(vliq);
-    $('pontoEquilibrio').innerHTML=`
-        <div class="g3">
-            <div class="scard b" style="text-align:center"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l);margin:0 auto .5rem"><i class="fas fa-road"></i></div><div class="sl">KM mínimo/dia</div><div class="sv">${kmEquilibrio.toFixed(0)}<span style="font-size:.7rem"> km</span></div><div class="ss">para cobrir custos</div></div>
-            <div class="scard y" style="text-align:center"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger);margin:0 auto .5rem"><i class="fas fa-clock"></i></div><div class="sl">Horas mínimas</div><div class="sv">${horasEquilibrio.toFixed(1)}<span style="font-size:.7rem"> h</span></div><div class="ss">estimado a 30km/h</div></div>
-            <div class="scard ${vliq>=0?'g':'r'}" style="text-align:center"><div class="si" style="background:${vliq>=0?'rgba(0,184,148,.12)':'rgba(225,112,85,.1)'};color:${vliq>=0?'var(--secondary)':'var(--danger)'};margin:0 auto .5rem"><i class="fas fa-${vliq>=0?'check':'times'}-circle"></i></div><div class="sl">Situação</div><div class="sv" style="font-size:.85rem">${vliq>=0?'Lucrativo':'Prejuízo'}</div><div class="ss">${fmt(vliq)}</div></div>
-        </div>
-        <div class="alert alert-i" style="margin-top:1rem"><i class="fas fa-info-circle"></i> Com ${km.toFixed(0)} km rodados a ${fmt(vkm)}/km, você precisa de pelo menos <strong>${kmEquilibrio.toFixed(0)} km</strong> só para cobrir os custos.</div>`;
+    if(isNaN(cons)||cons<=0){toast('Consumo inválido.','error');return;}if(isNaN(km)||km<=0){toast('KM inválido.','error');return;}
+    const lit=km/cons,cc=lit*comb,ct=alug+prest+dm+cc+dd,custoKM=ct/km,vliq=(vkm*km)-ct;
+    const kmEq=ct/vkm,hEq=kmEq/30;
+    $('resCustoKM').textContent=fmt(custoKM);$('resDespDiarias').textContent=fmt(ct);$('resValorLiq').textContent=fmt(vliq);
+    $('pontoEquilibrio').innerHTML=`<div class="g3"><div class="scard b" style="text-align:center"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l);margin:0 auto .5rem"><i class="fas fa-road"></i></div><div class="sl">KM mínimo/dia</div><div class="sv">${kmEq.toFixed(0)}<span style="font-size:.7rem"> km</span></div><div class="ss">para cobrir custos</div></div><div class="scard y" style="text-align:center"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger);margin:0 auto .5rem"><i class="fas fa-clock"></i></div><div class="sl">Horas mínimas</div><div class="sv">${hEq.toFixed(1)}<span style="font-size:.7rem"> h</span></div><div class="ss">estimado a 30km/h</div></div><div class="scard ${vliq>=0?'g':'r'}" style="text-align:center"><div class="si" style="background:${vliq>=0?'rgba(0,184,148,.12)':'rgba(225,112,85,.1)'};color:${vliq>=0?'var(--secondary)':'var(--danger)'};margin:0 auto .5rem"><i class="fas fa-${vliq>=0?'check':'times'}-circle"></i></div><div class="sl">Situação</div><div class="sv" style="font-size:.85rem">${vliq>=0?'Lucrativo':'Prejuízo'}</div><div class="ss">${fmt(vliq)}</div></div></div><div class="alert alert-i" style="margin-top:1rem"><i class="fas fa-info-circle"></i> Com ${km.toFixed(0)} km rodados a ${fmt(vkm)}/km, você precisa de pelo menos <strong>${kmEq.toFixed(0)} km</strong> só para cobrir os custos.</div>`;
     $('resultadoCustoKM').style.display='block';
 }
 
 // ══════════════════════════════════════════
-// ESTIMATIVAS + PREVISÃO
+// ESTIMATIVAS
 // ══════════════════════════════════════════
 function calcularEstimativas(){
-    const luc=parseFloat($('lucroDesejado').value)||0;
-    const al=parseFloat($('aluguelDiario').value)||0,pr=parseFloat($('prestacaoDiaria').value)||0;
+    const luc=parseFloat($('lucroDesejado').value)||0,al=parseFloat($('aluguelDiario').value)||0,pr=parseFloat($('prestacaoDiaria').value)||0;
     const dm=parseFloat($('despesasMedias').value)||0,dd=parseFloat($('despesasDiariasEst').value)||0;
     const cons=parseFloat($('consumoCarroEst').value),comb=parseFloat($('valorCombEst').value);
     const h=parseFloat($('horasTrabalho').value),km=parseFloat($('kmDia').value),ds=parseInt($('diasSemana').value);
     const td=al+pr+dm+dd+(km/cons*comb),br=luc+td;
-    $('valorKm').textContent=fmt(br/km);$('valorHora').textContent=fmt(br/h);
-    $('totalDespesas').textContent=fmt(td);$('valorBruto').textContent=fmt(br);
-    $('lucroLiquidoEst').textContent=fmt(luc);$('lucroSemanal').textContent=`${fmt(luc*ds)} (${ds} dias)`;
-    $('resultadoEstimativas').style.display='block';
-    renderForecast();
+    $('valorKm').textContent=fmt(br/km);$('valorHora').textContent=fmt(br/h);$('totalDespesas').textContent=fmt(td);$('valorBruto').textContent=fmt(br);$('lucroLiquidoEst').textContent=fmt(luc);$('lucroSemanal').textContent=`${fmt(luc*ds)} (${ds} dias)`;
+    $('resultadoEstimativas').style.display='block';renderForecast();
 }
-
 function renderForecast(){
     if(historico.length<5){$('forecastCard').style.display='none';return;}
     $('forecastCard').style.display='block';
-    const ultimos=historico.slice(0,14);
-    const mediaGanho=ultimos.reduce((a,r)=>a+parseFloat(r.valorGanho),0)/ultimos.length;
-    const mediaLucro=ultimos.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0)/ultimos.length;
-    const mediaKm=ultimos.reduce((a,r)=>a+parseFloat(r.kmRodado),0)/ultimos.length;
-    const diasMes=new Date().getDate();
-    const diasRestantes=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate()-diasMes;
-    const mesStr=mesAtual();
-    const diasTrabalhados=historico.filter(r=>r.data.startsWith(mesStr)).length;
-    const lucroMesAtual=historico.filter(r=>r.data.startsWith(mesStr)).reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);
-    const projecaoMes=diasTrabalhados>0?(lucroMesAtual/diasTrabalhados)*new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate():0;
-    $('forecastContent').innerHTML=`
-        <div class="g2" style="margin-bottom:.85rem">
-            <div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-chart-line"></i></div><div class="sl">Média diária (14d)</div><div class="sv">${fmt(mediaGanho)}</div></div>
-            <div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-hand-holding-usd"></i></div><div class="sl">Lucro médio (14d)</div><div class="sv">${fmt(mediaLucro)}</div></div>
-        </div>
-        <div class="mrow"><span class="ml">📊 Projeção de lucro este mês</span><span class="mv" style="color:var(--secondary)">${fmt(projecaoMes)}</span></div>
-        <div class="mrow"><span class="ml">📅 Dias restantes no mês</span><span class="mv">${diasRestantes}</span></div>
-        <div class="mrow"><span class="ml">💰 Projeção para os dias restantes</span><span class="mv" style="color:var(--secondary)">${fmt(diasRestantes*mediaLucro)}</span></div>
-        <div class="mrow"><span class="ml">🛣️ KM médio por dia</span><span class="mv">${mediaKm.toFixed(0)} km</span></div>
-        <div class="alert alert-s" style="margin-top:.85rem"><i class="fas fa-robot"></i> <strong>Previsão:</strong> Se mantiver o ritmo atual, você deve fechar o mês com <strong>${fmt(lucroMesAtual + diasRestantes*mediaLucro)}</strong> de lucro líquido.</div>`;
+    const ul=historico.slice(0,14);
+    const mg=ul.reduce((a,r)=>a+parseFloat(r.valorGanho),0)/ul.length;
+    const ml=ul.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0)/ul.length;
+    const mk=ul.reduce((a,r)=>a+parseFloat(r.kmRodado),0)/ul.length;
+    const diasMes=new Date().getDate(),diasRest=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate()-diasMes;
+    const ms=mesAtual(),dt=historico.filter(r=>r.data.startsWith(ms)).length;
+    const lm=historico.filter(r=>r.data.startsWith(ms)).reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);
+    const proj=dt>0?(lm/dt)*new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate():0;
+    $('forecastContent').innerHTML=`<div class="g2" style="margin-bottom:.85rem"><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-chart-line"></i></div><div class="sl">Média diária (14d)</div><div class="sv">${fmt(mg)}</div></div><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-hand-holding-usd"></i></div><div class="sl">Lucro médio (14d)</div><div class="sv">${fmt(ml)}</div></div></div><div class="mrow"><span class="ml">📊 Projeção lucro este mês</span><span class="mv" style="color:var(--secondary)">${fmt(proj)}</span></div><div class="mrow"><span class="ml">📅 Dias restantes</span><span class="mv">${diasRest}</span></div><div class="mrow"><span class="ml">💰 Projeção dos dias restantes</span><span class="mv" style="color:var(--secondary)">${fmt(diasRest*ml)}</span></div><div class="mrow"><span class="ml">🛣️ KM médio por dia</span><span class="mv">${mk.toFixed(0)} km</span></div><div class="alert alert-s" style="margin-top:.85rem"><i class="fas fa-robot"></i> <strong>Previsão:</strong> Se mantiver o ritmo atual, você deve fechar o mês com <strong>${fmt(lm+diasRest*ml)}</strong> de lucro líquido.</div>`;
 }
 
 // ══════════════════════════════════════════
 // METAS
 // ══════════════════════════════════════════
-function salvarMetas(){
-    metas={diaria:parseFloat($('metaDiaria').value)||0,semanal:parseFloat($('metaSemanal').value)||0,mensal:parseFloat($('metaMensal').value)||0};
-    saveData('metas',metas);renderMetas();toast('Metas salvas!','success');
-}
+function salvarMetas(){metas={diaria:parseFloat($('metaDiaria').value)||0,semanal:parseFloat($('metaSemanal').value)||0,mensal:parseFloat($('metaMensal').value)||0};saveData('metas',metas);renderMetas();toast('Metas salvas!','success');}
 function renderMetas(){
-    if(metas.diaria)$('metaDiaria').value=metas.diaria;
-    if(metas.semanal)$('metaSemanal').value=metas.semanal;
-    if(metas.mensal)$('metaMensal').value=metas.mensal;
+    if(metas.diaria)$('metaDiaria').value=metas.diaria;if(metas.semanal)$('metaSemanal').value=metas.semanal;if(metas.mensal)$('metaMensal').value=metas.mensal;
     const hs=hoje(),ms=mesAtual(),sa=new Date();sa.setDate(sa.getDate()-6);
     const lH=historico.filter(r=>r.data===hs).reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);
     const lS=historico.filter(r=>parseLocal(r.data)>=sa).reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);
     const lM=historico.filter(r=>r.data.startsWith(ms)).reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);
     const ps=[{key:'diaria',label:'Diária',icon:'fas fa-calendar-day',atual:lH,cor:'var(--secondary)'},{key:'semanal',label:'Semanal',icon:'fas fa-calendar-week',atual:lS,cor:'#0984e3'},{key:'mensal',label:'Mensal',icon:'fas fa-calendar-alt',atual:lM,cor:'var(--purple)'}];
-    $('progressoMetas').innerHTML=ps.map(p=>{
-        const mt=parseFloat(metas[p.key])||0,pct=mt>0?Math.min((p.atual/mt)*100,100):0,at=mt>0&&p.atual>=mt;
-        return`<div class="gcard"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem"><div style="display:flex;align-items:center;gap:.65rem"><div style="width:38px;height:38px;border-radius:10px;background:rgba(0,184,148,.1);color:${p.cor};display:flex;align-items:center;justify-content:center"><i class="${p.icon}"></i></div><div><div style="font-weight:700;font-size:.9rem;color:var(--text)">Meta ${p.label}</div><div style="font-size:.72rem;color:var(--text-sub)">${mt>0?`Objetivo: ${fmt(mt)}`:'Não definida'}</div></div></div>${at?`<span class="tag tag-g"><i class="fas fa-check-circle"></i> Atingida! 🎉</span>`:''}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.45rem"><span style="font-size:.78rem;color:var(--text-sub)">Progresso: <strong>${fmt(p.atual)}</strong></span><span style="font-size:.78rem;font-weight:700;color:${p.cor}">${pct.toFixed(0)}%</span></div><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${p.cor}"></div></div>${mt>0&&!at?`<div style="font-size:.72rem;color:var(--text-sub);margin-top:.4rem">Faltam: <strong>${fmt(mt-p.atual)}</strong></div>`:''}</div>`;
-    }).join('');
+    $('progressoMetas').innerHTML=ps.map(p=>{const mt=parseFloat(metas[p.key])||0,pct=mt>0?Math.min((p.atual/mt)*100,100):0,at=mt>0&&p.atual>=mt;return`<div class="gcard"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem"><div style="display:flex;align-items:center;gap:.65rem"><div style="width:38px;height:38px;border-radius:10px;background:rgba(0,184,148,.1);color:${p.cor};display:flex;align-items:center;justify-content:center"><i class="${p.icon}"></i></div><div><div style="font-weight:700;font-size:.9rem;color:var(--text)">Meta ${p.label}</div><div style="font-size:.72rem;color:var(--text-sub)">${mt>0?`Objetivo: ${fmt(mt)}`:'Não definida'}</div></div></div>${at?`<span class="tag tag-g"><i class="fas fa-check-circle"></i> Atingida! 🎉</span>`:''}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.45rem"><span style="font-size:.78rem;color:var(--text-sub)">Progresso: <strong>${fmt(p.atual)}</strong></span><span style="font-size:.78rem;font-weight:700;color:${p.cor}">${pct.toFixed(0)}%</span></div><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${p.cor}"></div></div>${mt>0&&!at?`<div style="font-size:.72rem;color:var(--text-sub);margin-top:.4rem">Faltam: <strong>${fmt(mt-p.atual)}</strong></div>`:''}</div>`;}).join('');
 }
 
 // ══════════════════════════════════════════
-// ABASTECIMENTO + HISTÓRICO DE PREÇOS
+// ABASTECIMENTO
 // ══════════════════════════════════════════
 function salvarAbastecimento(){
-    const data=$('abastData').value,km=parseFloat($('abastKm').value);
-    const lit=parseFloat($('abastLitros').value),preco=parseFloat($('abastPreco').value);
+    const data=$('abastData').value,km=parseFloat($('abastKm').value),lit=parseFloat($('abastLitros').value),preco=parseFloat($('abastPreco').value);
     const posto=$('abastPosto').value,tipo=$('abastTipo').value;
     if(!data||isNaN(km)||isNaN(lit)||isNaN(preco)){toast('Preencha todos os campos.','error');return;}
     const total=lit*preco;let cr=null;
     const ao=[...abastecimentos].sort((a,b)=>parseFloat(a.km)-parseFloat(b.km));
     if(ao.length){const u=ao[ao.length-1];const dk=km-parseFloat(u.km);if(dk>0)cr=(dk/lit).toFixed(2);}
     abastecimentos.push({id:Date.now(),data,km:km.toFixed(0),litros:lit.toFixed(2),preco:preco.toFixed(3),total:total.toFixed(2),consumoReal:cr,posto,tipo});
-    saveData('abastecimentos',abastecimentos);$('abastForm').reset();$('abastData').value=hoje();
-    renderAbastecimentos();renderAbastChart();toast('Abastecimento registrado!','success');
+    saveData('abastecimentos',abastecimentos);$('abastForm').reset();$('abastData').value=hoje();renderAbastecimentos();renderAbastChart();toast('Abastecimento registrado!','success');
 }
-
 function renderAbastecimentos(){
     if(!abastecimentos.length){$('abastCorpo').innerHTML=`<tr><td colspan="8">${emptyState('gas-pump','Nenhum abastecimento','Registre seu primeiro abastecimento acima')}</td></tr>`;$('abastResumo').innerHTML='';return;}
     const s=[...abastecimentos].sort((a,b)=>new Date(b.data)-new Date(a.data));
-    const tipoIcons={gasolina:'⛽',gasolinaA:'⛽',etanol:'🌿',gnv:'💧',diesel:'🔵'};
-    $('abastCorpo').innerHTML=s.map(a=>`<tr><td>${fmtData(a.data)}</td><td>${tipoIcons[a.tipo]||'⛽'} ${a.tipo||'--'}</td><td>${Number(a.km).toLocaleString('pt-BR')} km</td><td>${a.litros} L</td><td>${fmt(a.preco)}</td><td style="font-weight:600;color:var(--danger)">${fmt(a.total)}</td><td>${a.consumoReal?`<span class="tag tag-g">${a.consumoReal} km/L</span>`:'<span style="color:var(--text-sub);font-size:.75rem">1º reg.</span>'}</td><td><button class="btn btn-d btn-sm" onclick="apagarAbast(${a.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('');
-    const tg=abastecimentos.reduce((a,x)=>a+parseFloat(x.total),0);
-    const tl=abastecimentos.reduce((a,x)=>a+parseFloat(x.litros),0);
-    const cn=abastecimentos.filter(a=>a.consumoReal).map(a=>parseFloat(a.consumoReal));
-    const mc=cn.length?cn.reduce((a,b)=>a+b,0)/cn.length:0;
-    const pm=tl>0?tg/tl:0;
-    $('abastResumo').innerHTML=`<div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Total Gasto</div><div class="sv">${fmt(tg)}</div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-flask"></i></div><div class="sl">Total Litros</div><div class="sv">${tl.toFixed(1)}<span style="font-size:.7rem"> L</span></div></div><div class="scard y"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger)"><i class="fas fa-tag"></i></div><div class="sl">Preço Médio</div><div class="sv">${fmt(pm)}<span style="font-size:.65rem">/L</span></div></div>${mc>0?`<div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-tachometer-alt"></i></div><div class="sl">Consumo Médio</div><div class="sv">${mc.toFixed(1)}<span style="font-size:.65rem"> km/L</span></div></div>`:'<div></div>'}`;
+    const ti={gasolina:'⛽',gasolinaA:'⛽',etanol:'🌿',gnv:'💧',diesel:'🔵'};
+    $('abastCorpo').innerHTML=s.map(a=>`<tr><td>${fmtData(a.data)}</td><td>${ti[a.tipo]||'⛽'} ${a.tipo||'--'}</td><td>${Number(a.km).toLocaleString('pt-BR')} km</td><td>${a.litros} L</td><td>${fmt(a.preco)}</td><td style="font-weight:600;color:var(--danger)">${fmt(a.total)}</td><td>${a.consumoReal?`<span class="tag tag-g">${a.consumoReal} km/L</span>`:'<span style="color:var(--text-sub);font-size:.75rem">1º reg.</span>'}</td><td><button class="btn btn-d btn-sm" onclick="apagarAbast(${a.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('');
+    const tg=abastecimentos.reduce((a,x)=>a+parseFloat(x.total),0),tl=abastecimentos.reduce((a,x)=>a+parseFloat(x.litros),0);
+    const cn=abastecimentos.filter(a=>a.consumoReal).map(a=>parseFloat(a.consumoReal)),mc=cn.length?cn.reduce((a,b)=>a+b,0)/cn.length:0;
+    $('abastResumo').innerHTML=`<div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Total Gasto</div><div class="sv">${fmt(tg)}</div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-flask"></i></div><div class="sl">Total Litros</div><div class="sv">${tl.toFixed(1)}<span style="font-size:.7rem"> L</span></div></div><div class="scard y"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger)"><i class="fas fa-tag"></i></div><div class="sl">Preço Médio</div><div class="sv">${fmt(tg/tl)}<span style="font-size:.65rem">/L</span></div></div>${mc>0?`<div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-tachometer-alt"></i></div><div class="sl">Consumo Médio</div><div class="sv">${mc.toFixed(1)}<span style="font-size:.65rem"> km/L</span></div></div>`:'<div></div>'}`;
 }
-
 function renderAbastChart(){
     if(abastecimentos.length<2)return;
     const s=[...abastecimentos].sort((a,b)=>new Date(a.data)-new Date(b.data)).slice(-15);
-    const ctx=$('abastChart').getContext('2d');
-    if(abastChartInst)abastChartInst.destroy();
-    const dk=document.documentElement.classList.contains('dark');
-    const tc=dk?'#94a3b8':'#546e8a',gc=dk?'#2d4a6e':'#e2e8f0';
+    const ctx=$('abastChart').getContext('2d');if(abastChartInst)abastChartInst.destroy();
+    const dk=document.documentElement.classList.contains('dark'),tc=dk?'#94a3b8':'#546e8a',gc=dk?'#2d4a6e':'#e2e8f0';
     abastChartInst=new Chart(ctx,{type:'line',data:{labels:s.map(a=>fmtData(a.data).slice(0,5)),datasets:[{label:'R$/Litro',data:s.map(a=>parseFloat(a.preco)),borderColor:'#e17055',backgroundColor:'rgba(225,112,85,.1)',fill:true,tension:.4,pointRadius:4}]},options:{responsive:true,plugins:{legend:{labels:{color:tc}},tooltip:{callbacks:{label:c=>`R$ ${c.raw}/L`}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc,callback:v=>`R$ ${v}`},grid:{color:gc}}}}});
 }
-
-function apagarAbast(id){
-    showModal('Apagar Abastecimento','Deseja apagar este registro?','danger').then(ok=>{if(ok){abastecimentos=abastecimentos.filter(a=>a.id!==id);saveData('abastecimentos',abastecimentos);renderAbastecimentos();renderAbastChart();toast('Apagado.','success');}});
-}
+function apagarAbast(id){showModal('Apagar Abastecimento','Deseja apagar este registro?','danger').then(ok=>{if(ok){abastecimentos=abastecimentos.filter(a=>a.id!==id);saveData('abastecimentos',abastecimentos);renderAbastecimentos();renderAbastChart();toast('Apagado.','success');}});}
 
 // ══════════════════════════════════════════
 // MANUTENÇÃO
 // ══════════════════════════════════════════
 const mtTipos={oleo:'🔧 Troca de Óleo',pneu:'🔄 Pneus',freio:'🛑 Freios',revisao:'🔩 Revisão Geral',filtro:'🌬️ Filtros',bateria:'🔋 Bateria',outro:'🔧 Outro'};
-function salvarManutencao(){
-    const data=$('manutData').value,tipo=$('manutTipo').value;
-    const km=parseFloat($('manutKm').value),custo=parseFloat($('manutCusto').value)||0;
-    const pk=parseFloat($('manutProxKm').value)||null,desc=$('manutDesc').value;
-    if(!data||!tipo||isNaN(km)){toast('Preencha os campos obrigatórios.','error');return;}
-    manutencoes.push({id:Date.now(),data,tipo,km:km.toFixed(0),custo:custo.toFixed(2),proxKm:pk,desc});
-    saveData('manutencoes',manutencoes);$('manutForm').reset();$('manutData').value=hoje();
-    renderManutencoes();toast('Manutenção registrada!','success');
-}
+function salvarManutencao(){const data=$('manutData').value,tipo=$('manutTipo').value,km=parseFloat($('manutKm').value),custo=parseFloat($('manutCusto').value)||0,pk=parseFloat($('manutProxKm').value)||null,desc=$('manutDesc').value;if(!data||!tipo||isNaN(km)){toast('Preencha os campos obrigatórios.','error');return;}manutencoes.push({id:Date.now(),data,tipo,km:km.toFixed(0),custo:custo.toFixed(2),proxKm:pk,desc});saveData('manutencoes',manutencoes);$('manutForm').reset();$('manutData').value=hoje();renderManutencoes();toast('Manutenção registrada!','success');}
 function renderManutencoes(){
     const kma=historico.length>0?parseFloat(historico[0].kmRodado)||0:0;
     const al=manutencoes.filter(m=>m.proxKm&&kma>0&&(parseFloat(m.proxKm)-kma)<=1000);
@@ -1527,103 +1129,34 @@ function renderManutencoes(){
     const s=[...manutencoes].sort((a,b)=>new Date(b.data)-new Date(a.data));
     $('manutCorpo').innerHTML=s.map(m=>`<tr><td>${fmtData(m.data)}</td><td>${mtTipos[m.tipo]||m.tipo}</td><td>${Number(m.km).toLocaleString('pt-BR')} km</td><td style="color:var(--danger);font-weight:600">${fmt(m.custo)}</td><td>${m.proxKm?`${Number(m.proxKm).toLocaleString('pt-BR')} km`:'--'}</td><td style="color:var(--text-sub);font-size:.78rem">${m.desc||'--'}</td><td><button class="btn btn-d btn-sm" onclick="apagarManut(${m.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('');
 }
-function apagarManut(id){showModal('Apagar Manutenção','Deseja apagar este registro?','danger').then(ok=>{if(ok){manutencoes=manutencoes.filter(m=>m.id!==id);saveData('manutencoes',manutencoes);renderManutencoes();toast('Apagada.','success');}});}
+function apagarManut(id){showModal('Apagar Manutenção','Deseja apagar?','danger').then(ok=>{if(ok){manutencoes=manutencoes.filter(m=>m.id!==id);saveData('manutencoes',manutencoes);renderManutencoes();toast('Apagada.','success');}});}
 
 // ══════════════════════════════════════════
-// DESPESAS EXTRAS
+// DESPESAS
 // ══════════════════════════════════════════
 const despCats={pedagio:'🛣️ Pedágio',multa:'🚨 Multa',lavagem:'🚿 Lavagem',alimentacao:'🍔 Alimentação',estacionamento:'🅿️ Estacionamento',seguro:'🛡️ Seguro',ipva:'📄 IPVA',app:'📱 Taxa de App',outro:'💸 Outro'};
-
-function salvarDespesa(){
-    const data=$('despData').value,cat=$('despCategoria').value;
-    const val=parseFloat($('despValor').value),desc=$('despDesc').value;
-    if(!data||isNaN(val)||val<=0){toast('Preencha todos os campos.','error');return;}
-    despesas.push({id:Date.now(),data,categoria:cat,valor:val.toFixed(2),desc});
-    saveData('despesas',despesas);$('despForm').reset();$('despData').value=hoje();
-    renderDespesas();renderDespResumo();toast('Despesa registrada!','success');
-}
-
+function salvarDespesa(){const data=$('despData').value,cat=$('despCategoria').value,val=parseFloat($('despValor').value),desc=$('despDesc').value;if(!data||isNaN(val)||val<=0){toast('Preencha todos os campos.','error');return;}despesas.push({id:Date.now(),data,categoria:cat,valor:val.toFixed(2),desc});saveData('despesas',despesas);$('despForm').reset();$('despData').value=hoje();renderDespesas();renderDespResumo();toast('Despesa registrada!','success');}
 function renderDespesas(){
-    const filtroMes=$('despFiltroMes').value;
-    const mesesDisponiveis=[...new Set(despesas.map(d=>d.data.slice(0,7)))].sort().reverse();
-    const sel=$('despFiltroMes');const cur=sel.value;
-    sel.innerHTML='<option value="">Todos os meses</option>'+mesesDisponiveis.map(m=>`<option value="${m}">${m}</option>`).join('');
-    sel.value=cur||'';
-    const filtered=filtroMes?despesas.filter(d=>d.data.startsWith(filtroMes)):despesas;
+    const fm=$('despFiltroMes').value;
+    const md=[...new Set(despesas.map(d=>d.data.slice(0,7)))].sort().reverse();
+    const sel=$('despFiltroMes'),cur=sel.value;sel.innerHTML='<option value="">Todos os meses</option>'+md.map(m=>`<option value="${m}">${m}</option>`).join('');sel.value=cur||'';
+    const filtered=fm?despesas.filter(d=>d.data.startsWith(fm)):despesas;
     if(!filtered.length){$('despCorpo').innerHTML=`<tr><td colspan="5">${emptyState('wallet','Nenhuma despesa','Registre suas despesas extras acima')}</td></tr>`;return;}
     const s=[...filtered].sort((a,b)=>new Date(b.data)-new Date(a.data));
     $('despCorpo').innerHTML=s.map(d=>`<tr><td>${fmtData(d.data)}</td><td>${despCats[d.categoria]||d.categoria}</td><td style="color:var(--danger);font-weight:600">${fmt(d.valor)}</td><td style="color:var(--text-sub);font-size:.78rem">${d.desc||'--'}</td><td><button class="btn btn-d btn-sm" onclick="apagarDespesa(${d.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('');
 }
-
-function renderDespResumo(){
-    if(!despesas.length){$('despResumo').innerHTML='';return;}
-    const mesStr=mesAtual();
-    const mes=despesas.filter(d=>d.data.startsWith(mesStr));
-    const total=despesas.reduce((a,d)=>a+parseFloat(d.valor),0);
-    const totalMes=mes.reduce((a,d)=>a+parseFloat(d.valor),0);
-    const cats={};despesas.forEach(d=>{cats[d.categoria]=(cats[d.categoria]||0)+parseFloat(d.valor);});
-    const topCat=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];
-    $('despResumo').innerHTML=`<div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Total Geral</div><div class="sv">${fmt(total)}</div></div><div class="scard y"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger)"><i class="fas fa-calendar-alt"></i></div><div class="sl">Este Mês</div><div class="sv">${fmt(totalMes)}</div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-tag"></i></div><div class="sl">Maior Categoria</div><div class="sv" style="font-size:.85rem">${despCats[topCat?.[0]]?.split(' ')[0]||'--'}</div></div><div class="scard p"><div class="si" style="background:rgba(162,155,254,.12);color:var(--purple)"><i class="fas fa-list"></i></div><div class="sl">Registros</div><div class="sv">${despesas.length}</div></div>`;
-}
-
-function apagarDespesa(id){
-    showModal('Apagar Despesa','Deseja apagar esta despesa?','danger').then(ok=>{
-        if(!ok)return;
-        undoBuffer={type:'despesa',data:[...despesas]};
-        despesas=despesas.filter(d=>d.id!==id);saveData('despesas',despesas);
-        renderDespesas();renderDespResumo();toastWithUndo('Despesa apagada.');
-    });
-}
+function renderDespResumo(){if(!despesas.length){$('despResumo').innerHTML='';return;}const ms=mesAtual(),me=despesas.filter(d=>d.data.startsWith(ms)),total=despesas.reduce((a,d)=>a+parseFloat(d.valor),0),totalMes=me.reduce((a,d)=>a+parseFloat(d.valor),0);const cats={};despesas.forEach(d=>{cats[d.categoria]=(cats[d.categoria]||0)+parseFloat(d.valor);});const tc=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];$('despResumo').innerHTML=`<div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Total Geral</div><div class="sv">${fmt(total)}</div></div><div class="scard y"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger)"><i class="fas fa-calendar-alt"></i></div><div class="sl">Este Mês</div><div class="sv">${fmt(totalMes)}</div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-tag"></i></div><div class="sl">Maior Categoria</div><div class="sv" style="font-size:.85rem">${despCats[tc?.[0]]?.split(' ')[0]||'--'}</div></div><div class="scard p"><div class="si" style="background:rgba(162,155,254,.12);color:var(--purple)"><i class="fas fa-list"></i></div><div class="sl">Registros</div><div class="sv">${despesas.length}</div></div>`;}
+function apagarDespesa(id){showModal('Apagar Despesa','Deseja apagar esta despesa?','danger').then(ok=>{if(!ok)return;undoBuffer={type:'despesa',data:[...despesas]};despesas=despesas.filter(d=>d.id!==id);saveData('despesas',despesas);renderDespesas();renderDespResumo();toastWithUndo('Despesa apagada.');});}
 
 // ══════════════════════════════════════════
 // IMPOSTOS
 // ══════════════════════════════════════════
 function renderImpostos(){
-    const tipo=$('impostoTipo').value;
-    const bruto=parseFloat($('impostoBruto').value)||0;
-    const extras=$('impostoExtras');
-    if(tipo==='mei'){
-        extras.innerHTML='';
-        if(!bruto){$('impostoResultado').innerHTML='';return;}
-        const dasMei=bruto>0?67.80:0;
-        const teto=81000/12;
-        const ok=bruto<=teto;
-        $('impostoResultado').innerHTML=`<div class="card"><div class="card-hdr" style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e);border-radius:16px 16px 0 0"><i class="fas fa-file-invoice-dollar" style="color:#00b894"></i><span class="card-hdr-title" style="color:#fff">Simulação MEI — ${mesAtual()}</span></div><div class="card-body">${!ok?`<div class="alert alert-d"><i class="fas fa-exclamation-circle"></i> Atenção! Faturamento acima do limite MEI (R$ ${fmt(teto)}/mês). Você pode estar desenquadrado.</div>`:''}
-        <div class="mrow"><span class="ml">Faturamento Bruto</span><span class="mv">${fmt(bruto)}</span></div>
-        <div class="mrow"><span class="ml">DAS MEI (fixo)</span><span class="mv" style="color:var(--danger)">R$ 67,80</span></div>
-        <div class="mrow"><span class="ml">Valor Líquido</span><span class="mv" style="color:var(--secondary)">${fmt(bruto-67.80)}</span></div>
-        <div class="mrow"><span class="ml">Alíquota efetiva</span><span class="mv">${((67.80/bruto)*100).toFixed(2)}%</span></div>
-        <div class="alert alert-i" style="margin-top:.85rem"><i class="fas fa-info-circle"></i> O MEI paga um valor fixo de <strong>R$ 67,80/mês</strong> independente do faturamento (até o limite de R$ 81.000/ano).</div>
-        </div></div>`;
-    } else if(tipo==='autonomo'){
-        extras.innerHTML=`<div class="fg"><label class="fl">Outras deduções mensais (R$)</label><div class="fi-icon"><span class="ic">R$</span><input type="number" id="impostoDeducoes" step="0.01" min="0" class="fi" placeholder="0,00" oninput="renderImpostos()"></div></div>`;
-        if(!bruto){$('impostoResultado').innerHTML='';return;}
-        const deducoes=parseFloat($('impostoDeducoes')?.value)||0;
-        const baseCalculo=Math.max(bruto-deducoes,0);
-        let irpf=0,aliqIR='Isento';
-        if(baseCalculo>4664.68){irpf=(baseCalculo*0.275)-869.36;aliqIR='27,5%';}
-        else if(baseCalculo>3751.05){irpf=(baseCalculo*0.225)-662.77;aliqIR='22,5%';}
-        else if(baseCalculo>2826.65){irpf=(baseCalculo*0.15)-381.44;aliqIR='15%';}
-        else if(baseCalculo>2259.20){irpf=(baseCalculo*0.075)-169.44;aliqIR='7,5%';}
-        irpf=Math.max(irpf,0);
-        const inss=Math.min(baseCalculo*0.11,908.85);
-        const total=irpf+inss;
-        $('impostoResultado').innerHTML=`<div class="card"><div class="card-hdr" style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e);border-radius:16px 16px 0 0"><i class="fas fa-file-invoice-dollar" style="color:#00b894"></i><span class="card-hdr-title" style="color:#fff">Simulação Autônomo — ${mesAtual()}</span></div><div class="card-body">
-        <div class="mrow"><span class="ml">Renda Bruta</span><span class="mv">${fmt(bruto)}</span></div>
-        <div class="mrow"><span class="ml">Deduções</span><span class="mv" style="color:var(--danger)">- ${fmt(deducoes)}</span></div>
-        <div class="mrow"><span class="ml">Base de Cálculo</span><span class="mv">${fmt(baseCalculo)}</span></div>
-        <hr class="div">
-        <div class="mrow"><span class="ml">INSS (11% até teto)</span><span class="mv" style="color:var(--danger)">${fmt(inss)}</span></div>
-        <div class="mrow"><span class="ml">IRPF (${aliqIR})</span><span class="mv" style="color:var(--danger)">${fmt(irpf)}</span></div>
-        <div class="mrow"><span class="ml"><strong>Total de Impostos</strong></span><span class="mv" style="color:var(--danger);font-size:1rem"><strong>${fmt(total)}</strong></span></div>
-        <div class="mrow"><span class="ml"><strong>Valor Líquido</strong></span><span class="mv" style="color:var(--secondary);font-size:1rem"><strong>${fmt(bruto-total)}</strong></span></div>
-        <div class="mrow"><span class="ml">Alíquota Total Efetiva</span><span class="mv">${((total/bruto)*100).toFixed(1)}%</span></div>
-        <div class="alert alert-w" style="margin-top:.85rem"><i class="fas fa-exclamation-triangle"></i> Esta é uma estimativa simplificada. Consulte um contador para cálculos precisos.</div>
-        </div></div>`;
-    } else {
-        extras.innerHTML='';
-        $('impostoResultado').innerHTML=`<div class="alert alert-i"><i class="fas fa-info-circle"></i> Para CLT, os impostos (INSS e IRPF) são descontados diretamente na folha de pagamento pelo empregador.</div>`;
-    }
+    const tipo=$('impostoTipo').value,bruto=parseFloat($('impostoBruto').value)||0;
+    const ex=$('impostoExtras');
+    if(tipo==='mei'){ex.innerHTML='';if(!bruto){$('impostoResultado').innerHTML='';return;}const teto=81000/12,ok=bruto<=teto;$('impostoResultado').innerHTML=`<div class="card"><div class="card-hdr" style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e);border-radius:16px 16px 0 0"><i class="fas fa-file-invoice-dollar" style="color:#00b894"></i><span class="card-hdr-title" style="color:#fff">Simulação MEI</span></div><div class="card-body">${!ok?`<div class="alert alert-d"><i class="fas fa-exclamation-circle"></i> Faturamento acima do limite MEI (${fmt(teto)}/mês).</div>`:''}<div class="mrow"><span class="ml">Faturamento Bruto</span><span class="mv">${fmt(bruto)}</span></div><div class="mrow"><span class="ml">DAS MEI (fixo)</span><span class="mv" style="color:var(--danger)">R$ 67,80</span></div><div class="mrow"><span class="ml">Valor Líquido</span><span class="mv" style="color:var(--secondary)">${fmt(bruto-67.80)}</span></div><div class="mrow"><span class="ml">Alíquota efetiva</span><span class="mv">${((67.80/bruto)*100).toFixed(2)}%</span></div><div class="alert alert-i" style="margin-top:.85rem"><i class="fas fa-info-circle"></i> O MEI paga <strong>R$ 67,80/mês</strong> fixo independente do faturamento.</div></div></div>`;}
+    else if(tipo==='autonomo'){ex.innerHTML=`<div class="fg"><label class="fl">Outras deduções (R$)</label><div class="fi-icon"><span class="ic">R$</span><input type="number" id="impostoDeducoes" step="0.01" min="0" class="fi" placeholder="0,00" oninput="renderImpostos()"></div></div>`;if(!bruto){$('impostoResultado').innerHTML='';return;}const ded=parseFloat($('impostoDeducoes')?.value)||0,base=Math.max(bruto-ded,0);let irpf=0,aliq='Isento';if(base>4664.68){irpf=(base*0.275)-869.36;aliq='27,5%';}else if(base>3751.05){irpf=(base*0.225)-662.77;aliq='22,5%';}else if(base>2826.65){irpf=(base*0.15)-381.44;aliq='15%';}else if(base>2259.20){irpf=(base*0.075)-169.44;aliq='7,5%';}irpf=Math.max(irpf,0);const inss=Math.min(base*0.11,908.85),total=irpf+inss;$('impostoResultado').innerHTML=`<div class="card"><div class="card-hdr" style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e);border-radius:16px 16px 0 0"><i class="fas fa-file-invoice-dollar" style="color:#00b894"></i><span class="card-hdr-title" style="color:#fff">Simulação Autônomo</span></div><div class="card-body"><div class="mrow"><span class="ml">Renda Bruta</span><span class="mv">${fmt(bruto)}</span></div><div class="mrow"><span class="ml">Deduções</span><span class="mv" style="color:var(--danger)">- ${fmt(ded)}</span></div><div class="mrow"><span class="ml">Base de Cálculo</span><span class="mv">${fmt(base)}</span></div><hr class="div"><div class="mrow"><span class="ml">INSS (11%)</span><span class="mv" style="color:var(--danger)">${fmt(inss)}</span></div><div class="mrow"><span class="ml">IRPF (${aliq})</span><span class="mv" style="color:var(--danger)">${fmt(irpf)}</span></div><div class="mrow"><span class="ml"><strong>Total Impostos</strong></span><span class="mv" style="color:var(--danger);font-size:1rem"><strong>${fmt(total)}</strong></span></div><div class="mrow"><span class="ml"><strong>Valor Líquido</strong></span><span class="mv" style="color:var(--secondary);font-size:1rem"><strong>${fmt(bruto-total)}</strong></span></div><div class="mrow"><span class="ml">Alíquota Efetiva</span><span class="mv">${((total/bruto)*100).toFixed(1)}%</span></div><div class="alert alert-w" style="margin-top:.85rem"><i class="fas fa-exclamation-triangle"></i> Estimativa simplificada. Consulte um contador.</div></div></div>`;}
+    else{ex.innerHTML='';$('impostoResultado').innerHTML=`<div class="alert alert-i"><i class="fas fa-info-circle"></i> Para CLT, os impostos são descontados diretamente na folha pelo empregador.</div>`;}
 }
 
 // ══════════════════════════════════════════
@@ -1631,151 +1164,45 @@ function renderImpostos(){
 // ══════════════════════════════════════════
 let agendaMesAtual=new Date();
 function agendaNavMes(dir){agendaMesAtual=new Date(agendaMesAtual.getFullYear(),agendaMesAtual.getMonth()+dir,1);renderAgenda();}
-
 function renderAgenda(){
     const ano=agendaMesAtual.getFullYear(),mes=agendaMesAtual.getMonth();
     const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
     $('agendaMesTitle').textContent=`${meses[mes]} ${ano}`;
-    const primeiroDia=new Date(ano,mes,1).getDay();
-    const diasMes=new Date(ano,mes+1,0).getDate();
+    const pDia=new Date(ano,mes,1).getDay(),diasMes=new Date(ano,mes+1,0).getDate();
     const mesStr=`${ano}-${String(mes+1).padStart(2,'0')}`;
-    const diasTrabalhados=new Set(historico.filter(r=>r.data.startsWith(mesStr)).map(r=>r.data));
-    const planejados=agenda[mesStr]||[];
+    const dt=new Set(historico.filter(r=>r.data.startsWith(mesStr)).map(r=>r.data));
+    const pl=agenda[mesStr]||[];
     const dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
     let html=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:.3rem;text-align:center">`;
     dias.forEach(d=>html+=`<div style="font-size:.65rem;font-weight:700;color:var(--text-sub);padding:.3rem">${d}</div>`);
-    for(let i=0;i<primeiroDia;i++)html+=`<div></div>`;
-    for(let d=1;d<=diasMes;d++){
-        const dateStr=`${ano}-${String(mes+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const trabalhado=diasTrabalhados.has(dateStr);
-        const planejado=planejados.includes(d);
-        const isHoje=dateStr===hoje();
-        const reg=historico.find(r=>r.data===dateStr);
-        let bg='transparent',color='var(--text)',border='1px solid var(--border)';
-        if(trabalhado){bg='var(--secondary)';color='#fff';border='none';}
-        else if(planejado){bg='rgba(0,184,148,.1)';border='1px solid var(--secondary)';}
-        html+=`<div onclick="agendaClickDia(${d},'${mesStr}')" style="padding:.4rem .2rem;border-radius:8px;cursor:pointer;background:${bg};color:${color};border:${border};font-size:.8rem;font-weight:${isHoje?800:500};transition:all .2s;${isHoje?'box-shadow:0 0 0 2px var(--secondary)':''}" title="${reg?`Lucro: ${fmt(reg.lucroLiquido)}`:''}">
-            ${d}${reg?`<div style="font-size:.45rem;margin-top:.1rem">${fmt(reg.lucroLiquido).replace('R$','')}</div>`:''}
-        </div>`;
-    }
-    html+='</div>';
-    $('agendaCalendario').innerHTML=html;
-    const trabalhados=diasTrabalhados.size;
-    const lucroMes=historico.filter(r=>r.data.startsWith(mesStr)).reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);
-    const mediaDia=trabalhados>0?lucroMes/trabalhados:0;
-    $('agendaStats').innerHTML=`<div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-calendar-check"></i></div><div class="sl">Dias Trabalhados</div><div class="sv">${trabalhados}</div></div><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Lucro do Mês</div><div class="sv">${fmt(lucroMes)}</div></div><div class="scard y"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger)"><i class="fas fa-chart-line"></i></div><div class="sl">Média por Dia</div><div class="sv">${fmt(mediaDia)}</div></div>`;
+    for(let i=0;i<pDia;i++)html+=`<div></div>`;
+    for(let d=1;d<=diasMes;d++){const ds=`${mesStr}-${String(d).padStart(2,'0')}`,tr=dt.has(ds),pld=pl.includes(d),ih=ds===hoje(),reg=historico.find(r=>r.data===ds);let bg='transparent',color='var(--text)',border='1px solid var(--border)';if(tr){bg='var(--secondary)';color='#fff';border='none';}else if(pld){bg='rgba(0,184,148,.1)';border='1px solid var(--secondary)';}html+=`<div onclick="agendaClickDia(${d},'${mesStr}')" style="padding:.4rem .2rem;border-radius:8px;cursor:pointer;background:${bg};color:${color};border:${border};font-size:.8rem;font-weight:${ih?800:500};transition:all .2s;${ih?'box-shadow:0 0 0 2px var(--secondary)':''}" title="${reg?`Lucro: ${fmt(reg.lucroLiquido)}`:''}"> ${d}${reg?`<div style="font-size:.45rem;margin-top:.1rem">${fmt(reg.lucroLiquido).replace('R$','')}</div>`:''}</div>`;}
+    html+='</div>';$('agendaCalendario').innerHTML=html;
+    const tr=dt.size,lm=historico.filter(r=>r.data.startsWith(mesStr)).reduce((a,r)=>a+parseFloat(r.lucroLiquido),0),md=tr>0?lm/tr:0;
+    $('agendaStats').innerHTML=`<div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-calendar-check"></i></div><div class="sl">Dias Trabalhados</div><div class="sv">${tr}</div></div><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Lucro do Mês</div><div class="sv">${fmt(lm)}</div></div><div class="scard y"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger)"><i class="fas fa-chart-line"></i></div><div class="sl">Média por Dia</div><div class="sv">${fmt(md)}</div></div>`;
     const semana=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-    $('agendaSemana').innerHTML=semana.map((d,i)=>{
-        const pl=(agenda[mesStr+'_semana']||[]).includes(i);
-        return`<div onclick="toggleDiaSemana(${i},'${mesStr}')" style="padding:.6rem 1rem;border-radius:10px;cursor:pointer;font-size:.82rem;font-weight:600;background:${pl?'var(--secondary)':'var(--bg)'};color:${pl?'#fff':'var(--text-sub)'};border:2px solid ${pl?'var(--secondary)':'var(--border)'};transition:all .2s">${d}</div>`;
-    }).join('');
+    $('agendaSemana').innerHTML=semana.map((d,i)=>{const p=(agenda[mesStr+'_semana']||[]).includes(i);return`<div onclick="toggleDiaSemana(${i},'${mesStr}')" style="padding:.6rem 1rem;border-radius:10px;cursor:pointer;font-size:.82rem;font-weight:600;background:${p?'var(--secondary)':'var(--bg)'};color:${p?'#fff':'var(--text-sub)'};border:2px solid ${p?'var(--secondary)':'var(--border)'};transition:all .2s">${d}</div>`;}).join('');
 }
-
-function agendaClickDia(d,mesStr){
-    const dateStr=`${mesStr}-${String(d).padStart(2,'0')}`;
-    const reg=historico.find(r=>r.data===dateStr);
-    if(reg){toast(`${fmtData(dateStr)}: Lucro ${fmt(reg.lucroLiquido)}`, 'info');return;}
-    const pl=agenda[mesStr]||[];
-    const idx=pl.indexOf(d);
-    if(idx===-1)pl.push(d);else pl.splice(idx,1);
-    agenda[mesStr]=pl;saveData('agenda',agenda);renderAgenda();
-}
-
-function toggleDiaSemana(i,mesStr){
-    const key=mesStr+'_semana';
-    const pl=agenda[key]||[];
-    const idx=pl.indexOf(i);
-    if(idx===-1)pl.push(i);else pl.splice(idx,1);
-    agenda[key]=pl;saveData('agenda',agenda);renderAgenda();
-}
-
+function agendaClickDia(d,mesStr){const ds=`${mesStr}-${String(d).padStart(2,'0')}`,reg=historico.find(r=>r.data===ds);if(reg){toast(`${fmtData(ds)}: Lucro ${fmt(reg.lucroLiquido)}`,'info');return;}const pl=agenda[mesStr]||[];const idx=pl.indexOf(d);if(idx===-1)pl.push(d);else pl.splice(idx,1);agenda[mesStr]=pl;saveData('agenda',agenda);renderAgenda();}
+function toggleDiaSemana(i,mesStr){const key=mesStr+'_semana',pl=agenda[key]||[];const idx=pl.indexOf(i);if(idx===-1)pl.push(i);else pl.splice(idx,1);agenda[key]=pl;saveData('agenda',agenda);renderAgenda();}
 function salvarAgenda(){saveData('agenda',agenda);toast('Planejamento salvo!','success');}
 
 // ══════════════════════════════════════════
 // RELATÓRIO
 // ══════════════════════════════════════════
 function gerarRelatorio(){
-    const mes=$('relMes').value;
-    if(!mes){toast('Selecione o mês.','warning');return;}
-    const rg=historico.filter(r=>r.data.startsWith(mes));
-    const ab=abastecimentos.filter(a=>a.data.startsWith(mes));
-    const mn=manutencoes.filter(m=>m.data.startsWith(mes));
-    const dp=despesas.filter(d=>d.data.startsWith(mes));
+    const mes=$('relMes').value;if(!mes){toast('Selecione o mês.','warning');return;}
+    const rg=historico.filter(r=>r.data.startsWith(mes)),ab=abastecimentos.filter(a=>a.data.startsWith(mes)),mn=manutencoes.filter(m=>m.data.startsWith(mes)),dp=despesas.filter(d=>d.data.startsWith(mes));
     if(!rg.length){$('resultadoRelatorio').innerHTML=`<div class="alert alert-i"><i class="fas fa-info-circle"></i> Nenhum registro encontrado para este mês.</div>`;return;}
-    const [ano,mesN]=mes.split('-');
-    const mn2=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-    const titulo=`${mn2[parseInt(mesN)-1]} de ${ano}`;
-    const gt=rg.reduce((a,r)=>a+parseFloat(r.valorGanho),0),lt=rg.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);
-    const ct=rg.reduce((a,r)=>a+parseFloat(r.custoTotal||0),0),kt=rg.reduce((a,r)=>a+parseFloat(r.kmRodado),0);
-    const ht=rg.reduce((a,r)=>a+calcH(r.horaInicio,r.horaFim),0);
-    const ca=ab.reduce((a,x)=>a+parseFloat(x.total),0),cm=mn.reduce((a,x)=>a+parseFloat(x.custo),0);
-    const cd=dp.reduce((a,x)=>a+parseFloat(x.valor),0);
-    const mb=rg.reduce((a,b)=>parseFloat(a.lucroLiquido)>parseFloat(b.lucroLiquido)?a:b);
-    const mp=rg.reduce((a,b)=>parseFloat(a.lucroLiquido)<parseFloat(b.lucroLiquido)?a:b);
+    const [ano,mesN]=mes.split('-'),mn2=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],titulo=`${mn2[parseInt(mesN)-1]} de ${ano}`;
+    const gt=rg.reduce((a,r)=>a+parseFloat(r.valorGanho),0),lt=rg.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0),ct=rg.reduce((a,r)=>a+parseFloat(r.custoTotal||0),0),kt=rg.reduce((a,r)=>a+parseFloat(r.kmRodado),0),ht=rg.reduce((a,r)=>a+calcH(r.horaInicio,r.horaFim),0);
+    const ca=ab.reduce((a,x)=>a+parseFloat(x.total),0),cm=mn.reduce((a,x)=>a+parseFloat(x.custo),0),cd=dp.reduce((a,x)=>a+parseFloat(x.valor),0);
+    const mb=rg.reduce((a,b)=>parseFloat(a.lucroLiquido)>parseFloat(b.lucroLiquido)?a:b),mp=rg.reduce((a,b)=>parseFloat(a.lucroLiquido)<parseFloat(b.lucroLiquido)?a:b);
     const pl={};rg.forEach(r=>{const p=r.plataforma||'outro';pl[p]=(pl[p]||0)+parseFloat(r.valorGanho);});
-    const shiftData={manha:{g:0,c:0},tarde:{g:0,c:0},noite:{g:0,c:0}};
-    rg.forEach(r=>{const s=getShift(r.horaInicio);shiftData[s].g+=parseFloat(r.valorGanho);shiftData[s].c++;});
-    $('resultadoRelatorio').innerHTML=`
-    <div class="card" style="margin-bottom:1rem">
-        <div class="card-hdr" style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e);border-radius:16px 16px 0 0">
-            <i class="fas fa-file-alt" style="color:#00b894"></i>
-            <span class="card-hdr-title" style="color:#fff">Relatório de ${titulo}</span>
-        </div>
-        <div class="card-body">
-            <div class="g4" style="margin-bottom:1rem">
-                <div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-calendar"></i></div><div class="sl">Dias</div><div class="sv">${rg.length}</div></div>
-                <div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Faturamento</div><div class="sv">${fmt(gt)}</div></div>
-                <div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-receipt"></i></div><div class="sl">Despesas</div><div class="sv">${fmt(ct+ca+cm+cd)}</div></div>
-                <div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-hand-holding-usd"></i></div><div class="sl">Lucro</div><div class="sv">${fmt(lt)}</div></div>
-            </div>
-            <hr class="div">
-            <div class="g2">
-                <div>
-                    <div style="font-size:.72rem;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:.65rem">Médias</div>
-                    <div class="mrow"><span class="ml">Ganho médio/dia</span><span class="mv">${fmt(gt/rg.length)}</span></div>
-                    <div class="mrow"><span class="ml">Lucro médio/dia</span><span class="mv" style="color:var(--secondary)">${fmt(lt/rg.length)}</span></div>
-                    <div class="mrow"><span class="ml">Média por KM</span><span class="mv">${fmt(gt/kt)}</span></div>
-                    <div class="mrow"><span class="ml">Média por hora</span><span class="mv">${fmt(gt/ht)}</span></div>
-                    <div class="mrow"><span class="ml">KM total</span><span class="mv">${kt.toFixed(0)} km</span></div>
-                    <div class="mrow"><span class="ml">Horas trabalhadas</span><span class="mv">${ht.toFixed(1)} h</span></div>
-                </div>
-                <div>
-                    <div style="font-size:.72rem;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:.65rem">Destaques & Custos</div>
-                    <div class="mrow"><span class="ml">🏆 Melhor dia</span><span class="mv" style="color:var(--secondary)">${fmtData(mb.data)} (${fmt(mb.lucroLiquido)})</span></div>
-                    <div class="mrow"><span class="ml">📉 Pior dia</span><span class="mv" style="color:var(--danger)">${fmtData(mp.data)} (${fmt(mp.lucroLiquido)})</span></div>
-                    ${ca>0?`<div class="mrow"><span class="ml">⛽ Combustível</span><span class="mv" style="color:var(--danger)">${fmt(ca)}</span></div>`:''}
-                    ${cm>0?`<div class="mrow"><span class="ml">🔧 Manutenções</span><span class="mv" style="color:var(--danger)">${fmt(cm)}</span></div>`:''}
-                    ${cd>0?`<div class="mrow"><span class="ml">💸 Despesas Extras</span><span class="mv" style="color:var(--danger)">${fmt(cd)}</span></div>`:''}
-                </div>
-            </div>
-            <hr class="div">
-            <div style="font-size:.72rem;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:.65rem">Por Turno</div>
-            <div class="g3">
-                ${Object.entries(shiftData).map(([s,v])=>`<div class="scard"><div class="shift-badge ${getShiftClass(s)}" style="margin-bottom:.5rem">${getShiftLabel(s)}</div><div class="sl">${v.c} dias</div><div class="sv">${v.c>0?fmt(v.g/v.c):'--'}</div><div class="ss">média/dia</div></div>`).join('')}
-            </div>
-            ${Object.keys(pl).length>1?`<hr class="div"><div style="display:flex;flex-wrap:wrap;gap:.5rem">${Object.entries(pl).map(([p,v])=>`<div style="display:flex;align-items:center;gap:.45rem;padding:.5rem .85rem;background:var(--bg);border-radius:10px">${plBadge(p)}<span style="font-weight:700;font-size:.85rem">${fmt(v)}</span></div>`).join('')}</div>`:''}
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-hdr"><i class="fas fa-list" style="color:var(--info)"></i><span class="card-hdr-title">Todos os Dias</span></div>
-        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Data</th><th>Plataforma</th><th>Turno</th><th>Ganho</th><th>KM</th><th>Custo</th><th>Lucro</th></tr></thead>
-        <tbody>${rg.map(r=>`<tr><td>${fmtData(r.data)}</td><td>${plBadge(r.plataforma||'outro')}</td><td><span class="shift-badge ${getShiftClass(r.turno||getShift(r.horaInicio))}">${getShiftLabel(r.turno||getShift(r.horaInicio)).split(' ')[0]}</span></td><td style="color:var(--secondary);font-weight:600">${fmt(r.valorGanho)}</td><td>${r.kmRodado} km</td><td style="color:var(--danger)">${fmt(r.custoTotal||0)}</td><td style="color:var(--secondary);font-weight:600">${fmt(r.lucroLiquido)}</td></tr>`).join('')}</tbody>
-        </table></div>
-    </div>`;
+    const sd={manha:{g:0,l:0,c:0},tarde:{g:0,l:0,c:0},noite:{g:0,l:0,c:0}};rg.forEach(r=>{const s=r.turno||getShift(r.horaInicio);sd[s].g+=parseFloat(r.valorGanho);sd[s].l+=parseFloat(r.lucroLiquido);sd[s].c++;});
+    $('resultadoRelatorio').innerHTML=`<div class="card" style="margin-bottom:1rem"><div class="card-hdr" style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e);border-radius:16px 16px 0 0"><i class="fas fa-file-alt" style="color:#00b894"></i><span class="card-hdr-title" style="color:#fff">Relatório de ${titulo}</span></div><div class="card-body"><div class="g4" style="margin-bottom:1rem"><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-calendar"></i></div><div class="sl">Dias</div><div class="sv">${rg.length}</div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Faturamento</div><div class="sv">${fmt(gt)}</div></div><div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-receipt"></i></div><div class="sl">Despesas</div><div class="sv">${fmt(ct+ca+cm+cd)}</div></div><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-hand-holding-usd"></i></div><div class="sl">Lucro</div><div class="sv">${fmt(lt)}</div></div></div><hr class="div"><div class="g2"><div><div style="font-size:.72rem;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:.65rem">Médias</div><div class="mrow"><span class="ml">Ganho médio/dia</span><span class="mv">${fmt(gt/rg.length)}</span></div><div class="mrow"><span class="ml">Lucro médio/dia</span><span class="mv" style="color:var(--secondary)">${fmt(lt/rg.length)}</span></div><div class="mrow"><span class="ml">Média por KM</span><span class="mv">${fmt(gt/kt)}</span></div><div class="mrow"><span class="ml">KM total</span><span class="mv">${kt.toFixed(0)} km</span></div><div class="mrow"><span class="ml">Horas trabalhadas</span><span class="mv">${ht.toFixed(1)} h</span></div></div><div><div style="font-size:.72rem;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:.65rem">Destaques</div><div class="mrow"><span class="ml">🏆 Melhor dia</span><span class="mv" style="color:var(--secondary)">${fmtData(mb.data)} (${fmt(mb.lucroLiquido)})</span></div><div class="mrow"><span class="ml">📉 Pior dia</span><span class="mv" style="color:var(--danger)">${fmtData(mp.data)} (${fmt(mp.lucroLiquido)})</span></div>${ca>0?`<div class="mrow"><span class="ml">⛽ Combustível</span><span class="mv" style="color:var(--danger)">${fmt(ca)}</span></div>`:''}${cm>0?`<div class="mrow"><span class="ml">🔧 Manutenções</span><span class="mv" style="color:var(--danger)">${fmt(cm)}</span></div>`:''}${cd>0?`<div class="mrow"><span class="ml">💸 Despesas Extras</span><span class="mv" style="color:var(--danger)">${fmt(cd)}</span></div>`:''}</div></div><hr class="div"><div style="font-size:.72rem;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:.65rem">Por Turno</div><div class="g3">${Object.entries(sd).map(([s,v])=>`<div class="scard"><div class="shift-badge ${getShiftClass(s)}" style="margin-bottom:.5rem">${getShiftLabel(s)}</div><div class="sl">${v.c} dias</div><div class="sv">${v.c>0?fmt(v.g/v.c):'--'}</div><div class="ss">média/dia</div></div>`).join('')}</div>${Object.keys(pl).length>1?`<hr class="div"><div style="display:flex;flex-wrap:wrap;gap:.5rem">${Object.entries(pl).map(([p,v])=>`<div style="display:flex;align-items:center;gap:.45rem;padding:.5rem .85rem;background:var(--bg);border-radius:10px">${plBadge(p)}<span style="font-weight:700;font-size:.85rem">${fmt(v)}</span></div>`).join('')}</div>`:''}</div></div><div class="card"><div class="card-hdr"><i class="fas fa-list" style="color:var(--info)"></i><span class="card-hdr-title">Todos os Dias</span></div><div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Data</th><th>Plataforma</th><th>Turno</th><th>Ganho</th><th>KM</th><th>Custo</th><th>Lucro</th></tr></thead><tbody>${rg.map(r=>`<tr><td>${fmtData(r.data)}</td><td>${plBadge(r.plataforma||'outro')}</td><td><span class="shift-badge ${getShiftClass(r.turno||getShift(r.horaInicio))}">${getShiftLabel(r.turno||getShift(r.horaInicio)).split(' ')[0]}</span></td><td style="color:var(--secondary);font-weight:600">${fmt(r.valorGanho)}</td><td>${r.kmRodado} km</td><td style="color:var(--danger)">${fmt(r.custoTotal||0)}</td><td style="color:var(--secondary);font-weight:600">${fmt(r.lucroLiquido)}</td></tr>`).join('')}</tbody></table></div></div>`;
 }
-
-function compartilharRelatorioWA(){
-    const mes=$('relMes').value;
-    if(!mes){toast('Gere o relatório primeiro.','warning');return;}
-    const rg=historico.filter(r=>r.data.startsWith(mes));
-    if(!rg.length){toast('Sem dados para compartilhar.','warning');return;}
-    const gt=rg.reduce((a,r)=>a+parseFloat(r.valorGanho),0);
-    const lt=rg.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);
-    const [ano,mesN]=mes.split('-');
-    const mn=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    const msg=`🚗 *MotoGanhos Pro — ${mn[parseInt(mesN)-1]}/${ano}*\n\n📅 Dias trabalhados: ${rg.length}\n💰 Faturamento: ${fmt(gt)}\n✅ Lucro Líquido: ${fmt(lt)}\n📊 Média/dia: ${fmt(lt/rg.length)}\n\nGerado pelo MotoGanhos Pro`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
-}
+function compartilharRelatorioWA(){const mes=$('relMes').value;if(!mes){toast('Gere o relatório primeiro.','warning');return;}const rg=historico.filter(r=>r.data.startsWith(mes));if(!rg.length){toast('Sem dados.','warning');return;}const gt=rg.reduce((a,r)=>a+parseFloat(r.valorGanho),0),lt=rg.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);const [ano,mesN]=mes.split('-'),mn=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];const msg=`🚗 *MotoGanhos Pro — ${mn[parseInt(mesN)-1]}/${ano}*\n\n📅 Dias: ${rg.length}\n💰 Faturamento: ${fmt(gt)}\n✅ Lucro Líquido: ${fmt(lt)}\n📊 Média/dia: ${fmt(lt/rg.length)}\n\nMotoGanhos Pro`;window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');}
 
 // ══════════════════════════════════════════
 // PERFORMANCE
@@ -1783,72 +1210,25 @@ function compartilharRelatorioWA(){
 function renderPerformance(){
     if(historico.length<2){$('perfContent').innerHTML=`<div class="alert alert-i"><i class="fas fa-info-circle"></i> Registre pelo menos 2 dias para ver análises.</div>`;return;}
     const rk=[...historico].sort((a,b)=>parseFloat(b.lucroLiquido)-parseFloat(a.lucroLiquido)).slice(0,5);
-    const ds=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-    const pd=Array(7).fill(null).map(()=>({g:0,l:0,c:0}));
+    const ds=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],pd=Array(7).fill(null).map(()=>({g:0,l:0,c:0}));
     historico.forEach(r=>{const d=parseLocal(r.data).getDay();pd[d].g+=parseFloat(r.valorGanho);pd[d].l+=parseFloat(r.lucroLiquido);pd[d].c++;});
-    const shiftStats={manha:{g:0,l:0,c:0},tarde:{g:0,l:0,c:0},noite:{g:0,l:0,c:0}};
-    historico.forEach(r=>{const s=r.turno||getShift(r.horaInicio);shiftStats[s].g+=parseFloat(r.valorGanho);shiftStats[s].l+=parseFloat(r.lucroLiquido);shiftStats[s].c++;});
+    const ss={manha:{g:0,l:0,c:0},tarde:{g:0,l:0,c:0},noite:{g:0,l:0,c:0}};
+    historico.forEach(r=>{const s=r.turno||getShift(r.horaInicio);ss[s].g+=parseFloat(r.valorGanho);ss[s].l+=parseFloat(r.lucroLiquido);ss[s].c++;});
     const pp={};historico.forEach(r=>{const p=r.plataforma||'outro';if(!pp[p]){pp[p]={g:0,l:0,c:0,k:0};}pp[p].g+=parseFloat(r.valorGanho);pp[p].l+=parseFloat(r.lucroLiquido);pp[p].c++;pp[p].k+=parseFloat(r.kmRodado);});
     const u7=historico.slice(0,7),a7=historico.slice(7,14);
     const mu=u7.length?u7.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0)/u7.length:0;
     const ma=a7.length?a7.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0)/a7.length:0;
-    const td=ma>0?((mu-ma)/ma)*100:0;
-    const mx=Math.max(...pd.filter(d=>d.c>0).map(d=>d.l/d.c),1);
-    const bestShift=Object.entries(shiftStats).filter(([,v])=>v.c>0).sort((a,b)=>(b[1].l/b[1].c)-(a[1].l/a[1].c))[0];
+    const td=ma>0?((mu-ma)/ma)*100:0,mx=Math.max(...pd.filter(d=>d.c>0).map(d=>d.l/d.c),1);
+    const bs=Object.entries(ss).filter(([,v])=>v.c>0).sort((a,b)=>(b[1].l/b[1].c)-(a[1].l/a[1].c))[0];
     $('perfContent').innerHTML=`
     <div class="g2" style="margin-bottom:1rem">
         <div class="scard ${td>=0?'g':'r'}"><div class="si" style="background:${td>=0?'rgba(0,184,148,.12)':'rgba(225,112,85,.1)'};color:${td>=0?'var(--secondary)':'var(--danger)'}"><i class="fas fa-${td>=0?'arrow-up':'arrow-down'}"></i></div><div class="sl">Tendência (7 dias)</div><div class="sv" style="color:${td>=0?'var(--secondary)':'var(--danger)'}">${td>=0?'+':''}${td.toFixed(1)}%</div><div class="ss">vs período anterior</div></div>
-        <div class="scard p"><div class="si" style="background:rgba(162,155,254,.12);color:var(--purple)"><i class="fas fa-clock"></i></div><div class="sl">Melhor Turno</div><div class="sv" style="font-size:.85rem">${bestShift?getShiftLabel(bestShift[0]):'--'}</div><div class="ss">${bestShift?fmt(bestShift[1].l/bestShift[1].c)+'/dia':''}</div></div>
+        <div class="scard p"><div class="si" style="background:rgba(162,155,254,.12);color:var(--purple)"><i class="fas fa-clock"></i></div><div class="sl">Melhor Turno</div><div class="sv" style="font-size:.85rem">${bs?getShiftLabel(bs[0]):'--'}</div><div class="ss">${bs?fmt(bs[1].l/bs[1].c)+'/dia':''}</div></div>
     </div>
-
-    <!-- Análise por Turno -->
-    <div class="card" style="margin-bottom:1rem">
-        <div class="card-hdr"><i class="fas fa-sun" style="color:var(--warning)"></i><span class="card-hdr-title">Análise por Turno</span></div>
-        <div class="card-body">
-            <div class="g3">
-                ${Object.entries(shiftStats).map(([s,v])=>`<div class="scard"><div class="shift-badge ${getShiftClass(s)}" style="margin-bottom:.65rem">${getShiftLabel(s)}</div><div class="sl">${v.c} dias</div><div class="sv">${v.c?fmt(v.l/v.c):'--'}</div><div class="ss">Ganho: ${v.c?fmt(v.g/v.c):fmt(0)}</div></div>`).join('')}
-            </div>
-        </div>
-    </div>
-
-    <!-- Comparativo Períodos -->
-    <div class="card" style="margin-bottom:1rem">
-        <div class="card-hdr"><i class="fas fa-balance-scale" style="color:var(--info)"></i><span class="card-hdr-title">Comparativo de Períodos</span></div>
-        <div class="card-body">
-            <div class="g2">
-                <div>
-                    <div style="font-size:.72rem;font-weight:700;color:var(--secondary);text-transform:uppercase;margin-bottom:.5rem">Últimos 7 dias</div>
-                    <div class="mrow"><span class="ml">Lucro médio/dia</span><span class="mv" style="color:var(--secondary)">${fmt(mu)}</span></div>
-                    <div class="mrow"><span class="ml">Dias trabalhados</span><span class="mv">${u7.length}</span></div>
-                    <div class="mrow"><span class="ml">Total ganho</span><span class="mv">${fmt(u7.reduce((a,r)=>a+parseFloat(r.valorGanho),0))}</span></div>
-                </div>
-                <div>
-                    <div style="font-size:.72rem;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:.5rem">7 dias anteriores</div>
-                    <div class="mrow"><span class="ml">Lucro médio/dia</span><span class="mv">${fmt(ma)}</span></div>
-                    <div class="mrow"><span class="ml">Dias trabalhados</span><span class="mv">${a7.length}</span></div>
-                    <div class="mrow"><span class="ml">Total ganho</span><span class="mv">${fmt(a7.reduce((a,r)=>a+parseFloat(r.valorGanho),0))}</span></div>
-                </div>
-            </div>
-            <div class="alert ${td>=0?'alert-s':'alert-d'}" style="margin-top:.85rem"><i class="fas fa-${td>=0?'arrow-up':'arrow-down'}"></i> <strong>${td>=0?`+${td.toFixed(1)}% melhor`:`${td.toFixed(1)}% pior`}</strong> que o período anterior.</div>
-        </div>
-    </div>
-
-    <!-- Média por dia da semana -->
-    <div class="card" style="margin-bottom:1rem">
-        <div class="card-hdr"><i class="fas fa-calendar-week" style="color:var(--secondary)"></i><span class="card-hdr-title">Lucro Médio por Dia da Semana</span></div>
-        <div class="card-body">
-            ${ds.map((d,i)=>{const dd=pd[i];if(!dd.c)return`<div class="mrow"><span class="ml">${d}</span><span style="font-size:.78rem;color:var(--text-sub)">Sem dados</span></div>`;const m=dd.l/dd.c,p=(m/mx)*100;return`<div style="margin-bottom:.65rem"><div style="display:flex;justify-content:space-between;margin-bottom:.3rem"><span style="font-size:.78rem;font-weight:600;color:var(--text)">${d}</span><span style="font-size:.78rem;font-weight:700;color:var(--secondary)">${fmt(m)} <span style="color:var(--text-sub);font-weight:400">(${dd.c} dias)</span></span></div><div class="prog-wrap"><div class="prog-bar" style="width:${p}%"></div></div></div>`;}).join('')}
-        </div>
-    </div>
-
-    <!-- Top 5 -->
-    <div class="card" style="margin-bottom:1rem">
-        <div class="card-hdr"><i class="fas fa-trophy" style="color:var(--warning)"></i><span class="card-hdr-title">🏆 Top 5 Melhores Dias</span></div>
-        <div class="card-body">
-            ${rk.map((r,i)=>`<div class="mrow"><div style="display:flex;align-items:center;gap:.85rem"><div style="width:28px;height:28px;border-radius:50%;background:${i===0?'linear-gradient(135deg,#fdcb6e,#e17055)':i===1?'linear-gradient(135deg,#b2bec3,#636e72)':i===2?'linear-gradient(135deg,#e17055,#a55eea)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:${i<3?'#fff':'var(--text-sub)'};flex-shrink:0">${i+1}</div><div><div style="font-size:.82rem;font-weight:600;color:var(--text)">${fmtData(r.data)}</div><div style="font-size:.7rem;color:var(--text-sub)">${r.kmRodado} km • ${r.horaInicio}–${r.horaFim} ${plBadge(r.plataforma||'outro')}</div></div></div><div style="text-align:right"><div style="font-size:.88rem;font-weight:700;color:var(--secondary)">${fmt(r.lucroLiquido)}</div><div style="font-size:.7rem;color:var(--text-sub)">Bruto: ${fmt(r.valorGanho)}</div></div></div>`).join('')}
-        </div>
-    </div>
-
+    <div class="card" style="margin-bottom:1rem"><div class="card-hdr"><i class="fas fa-sun" style="color:var(--warning)"></i><span class="card-hdr-title">Análise por Turno</span></div><div class="card-body"><div class="g3">${Object.entries(ss).map(([s,v])=>`<div class="scard"><div class="shift-badge ${getShiftClass(s)}" style="margin-bottom:.65rem">${getShiftLabel(s)}</div><div class="sl">${v.c} dias</div><div class="sv">${v.c?fmt(v.l/v.c):'--'}</div><div class="ss">Ganho: ${v.c?fmt(v.g/v.c):fmt(0)}</div></div>`).join('')}</div></div></div>
+    <div class="card" style="margin-bottom:1rem"><div class="card-hdr"><i class="fas fa-balance-scale" style="color:var(--info)"></i><span class="card-hdr-title">Comparativo de Períodos</span></div><div class="card-body"><div class="g2"><div><div style="font-size:.72rem;font-weight:700;color:var(--secondary);text-transform:uppercase;margin-bottom:.5rem">Últimos 7 dias</div><div class="mrow"><span class="ml">Lucro médio/dia</span><span class="mv" style="color:var(--secondary)">${fmt(mu)}</span></div><div class="mrow"><span class="ml">Dias trabalhados</span><span class="mv">${u7.length}</span></div></div><div><div style="font-size:.72rem;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:.5rem">7 dias anteriores</div><div class="mrow"><span class="ml">Lucro médio/dia</span><span class="mv">${fmt(ma)}</span></div><div class="mrow"><span class="ml">Dias trabalhados</span><span class="mv">${a7.length}</span></div></div></div><div class="alert ${td>=0?'alert-s':'alert-d'}" style="margin-top:.85rem"><i class="fas fa-${td>=0?'arrow-up':'arrow-down'}"></i> <strong>${td>=0?`+${td.toFixed(1)}% melhor`:`${td.toFixed(1)}% pior`}</strong> que o período anterior.</div></div></div>
+    <div class="card" style="margin-bottom:1rem"><div class="card-hdr"><i class="fas fa-calendar-week" style="color:var(--secondary)"></i><span class="card-hdr-title">Lucro Médio por Dia da Semana</span></div><div class="card-body">${ds.map((d,i)=>{const dd=pd[i];if(!dd.c)return`<div class="mrow"><span class="ml">${d}</span><span style="font-size:.78rem;color:var(--text-sub)">Sem dados</span></div>`;const m=dd.l/dd.c,p=(m/mx)*100;return`<div style="margin-bottom:.65rem"><div style="display:flex;justify-content:space-between;margin-bottom:.3rem"><span style="font-size:.78rem;font-weight:600;color:var(--text)">${d}</span><span style="font-size:.78rem;font-weight:700;color:var(--secondary)">${fmt(m)} <span style="color:var(--text-sub);font-weight:400">(${dd.c} dias)</span></span></div><div class="prog-wrap"><div class="prog-bar" style="width:${p}%"></div></div></div>`;}).join('')}</div></div>
+    <div class="card" style="margin-bottom:1rem"><div class="card-hdr"><i class="fas fa-trophy" style="color:var(--warning)"></i><span class="card-hdr-title">🏆 Top 5 Melhores Dias</span></div><div class="card-body">${rk.map((r,i)=>`<div class="mrow"><div style="display:flex;align-items:center;gap:.85rem"><div style="width:28px;height:28px;border-radius:50%;background:${i===0?'linear-gradient(135deg,#fdcb6e,#e17055)':i===1?'linear-gradient(135deg,#b2bec3,#636e72)':i===2?'linear-gradient(135deg,#e17055,#a55eea)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:${i<3?'#fff':'var(--text-sub)'};flex-shrink:0">${i+1}</div><div><div style="font-size:.82rem;font-weight:600;color:var(--text)">${fmtData(r.data)}</div><div style="font-size:.7rem;color:var(--text-sub)">${r.kmRodado} km • ${r.horaInicio}–${r.horaFim} ${plBadge(r.plataforma||'outro')}</div></div></div><div style="text-align:right"><div style="font-size:.88rem;font-weight:700;color:var(--secondary)">${fmt(r.lucroLiquido)}</div><div style="font-size:.7rem;color:var(--text-sub)">Bruto: ${fmt(r.valorGanho)}</div></div></div>`).join('')}</div></div>
     ${Object.keys(pp).length>1?`<div class="card"><div class="card-hdr"><i class="fas fa-mobile-alt" style="color:var(--info)"></i><span class="card-hdr-title">Por Plataforma</span></div><div class="card-body">${Object.entries(pp).map(([p,v])=>`<div class="mrow"><div style="display:flex;align-items:center;gap:.65rem">${plBadge(p)}<span style="font-size:.78rem;color:var(--text-sub)">${v.c} dias • ${v.k.toFixed(0)} km</span></div><div style="text-align:right"><div style="font-size:.85rem;font-weight:700;color:var(--secondary)">${fmt(v.l)}</div><div style="font-size:.7rem;color:var(--text-sub)">Média: ${fmt(v.l/v.c)}/dia</div></div></div>`).join('')}</div></div>`:''}`;
 }
 
@@ -1865,21 +1245,14 @@ dmb.addEventListener('click',()=>{hel.classList.toggle('dark');saveData('darkMod
 // TOAST
 // ══════════════════════════════════════════
 let ttimer;
-function toast(msg,type='success'){
-    const el=$('toast'),ic=$('toastIcon');
-    const icons={success:'fa-check-circle',error:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle'};
-    $('toastMsg').textContent=msg;ic.className=`fas ${icons[type]||'fa-check-circle'}`;
-    $('toastUndo').style.display='none';
-    el.className=`${type} show`;clearTimeout(ttimer);
-    ttimer=setTimeout(()=>{el.classList.remove('show');el.className=type;},3200);
-}
+function toast(msg,type='success'){const el=$('toast'),ic=$('toastIcon');const icons={success:'fa-check-circle',error:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle'};$('toastMsg').textContent=msg;ic.className=`fas ${icons[type]||'fa-check-circle'}`;$('toastUndo').style.display='none';el.className=`${type} show`;clearTimeout(ttimer);ttimer=setTimeout(()=>{el.classList.remove('show');el.className=type;},3200);}
 
 // ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',()=>{
     initDashboard();
-    $('data').value=hoje();$('abastData').value=hoje();$('manutData').value=hoje();$('despData').value=hoje();$('manutData').value=hoje();$('relMes').value=mesAtual();
+    $('data').value=hoje();$('abastData').value=hoje();$('manutData').value=hoje();$('despData').value=hoje();$('relMes').value=mesAtual();
     if(metas.diaria)$('metaDiaria').value=metas.diaria;
     if(metas.semanal)$('metaSemanal').value=metas.semanal;
     if(metas.mensal)$('metaMensal').value=metas.mensal;
