@@ -9,7 +9,6 @@
 <meta name="apple-mobile-web-app-title" content="MotoGanhos Pro">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>MotoGanhos Pro</title>
-<!-- PWA CORRIGIDO: manifest externo -->
 <link rel="manifest" href="/motoganhos/manifest.json">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -158,10 +157,7 @@ select.fi{appearance:none;-webkit-appearance:none;background-image:url("data:ima
 .timer-status.idle{background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);}
 .timer-btn-wrap{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
 .timer-btn-big{padding:1rem;border-radius:16px;font-size:1rem;font-weight:700;}
-.skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
-@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 .empty-state{text-align:center;padding:3rem 1.5rem;color:var(--text-sub);}
-.empty-state svg{width:120px;height:120px;margin:0 auto 1.25rem;display:block;opacity:.4;}
 .empty-state h3{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.4rem;}
 .empty-state p{font-size:.82rem;line-height:1.5;}
 .shift-badge{display:inline-flex;align-items:center;gap:.25rem;padding:.18rem .55rem;border-radius:20px;font-size:.68rem;font-weight:700;}
@@ -362,9 +358,15 @@ input[type=number]{-moz-appearance:textfield;}
             <button class="btn btn-d btn-full" id="timerStopBtn" onclick="timerStop()" disabled style="margin-top:.65rem;padding:.75rem"><i class="fas fa-stop"></i> Finalizar e Preencher Calculadora</button>
         </div>
     </div>
+    <!-- HISTÓRICO DE TURNOS COM BOTÃO APAGAR -->
     <div class="card" id="timerHistCard" style="display:none">
         <div class="card-hdr"><i class="fas fa-history" style="color:var(--info)"></i><span class="card-hdr-title">Histórico de Turnos</span></div>
-        <div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Data</th><th>Início</th><th>Fim</th><th>Duração</th><th>Pausas</th></tr></thead><tbody id="timerHistBody"></tbody></table></div>
+        <div style="overflow-x:auto">
+            <table class="dtable">
+                <thead><tr><th>Data</th><th>Início</th><th>Fim</th><th>Duração</th><th>Pausas</th><th>Ações</th></tr></thead>
+                <tbody id="timerHistBody"></tbody>
+            </table>
+        </div>
     </div>
 </section>
 
@@ -765,7 +767,7 @@ let undoBuffer=null,undoTimer=null,draftTimer=null;
 const bnavPrincipais=['dashboard','timer','calculadora','historico'];
 
 // ══════════════════════════════════════════
-// PWA CORRIGIDO — Service Worker externo
+// PWA
 // ══════════════════════════════════════════
 if('serviceWorker' in navigator){
     window.addEventListener('load',()=>{
@@ -774,40 +776,16 @@ if('serviceWorker' in navigator){
             .catch(err=>console.log('SW erro:',err));
     });
 }
-
 let deferredPrompt;
-window.addEventListener('beforeinstallprompt',e=>{
-    e.preventDefault();
-    deferredPrompt=e;
-    $('installBtn').classList.add('show');
-    console.log('PWA: pronto para instalar!');
-});
-
-window.addEventListener('appinstalled',()=>{
-    $('installBtn').classList.remove('show');
-    deferredPrompt=null;
-    toast('App instalado com sucesso! 🎉','success');
-});
-
-window.installApp=()=>{
-    if(deferredPrompt){
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(choice=>{
-            if(choice.outcome==='accepted')toast('Instalando o app...','success');
-            deferredPrompt=null;
-            $('installBtn').classList.remove('show');
-        });
-    }
-};
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').classList.add('show');});
+window.addEventListener('appinstalled',()=>{$('installBtn').classList.remove('show');deferredPrompt=null;toast('App instalado! 🎉','success');});
+window.installApp=()=>{if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;$('installBtn').classList.remove('show');});}};
 
 // ══════════════════════════════════════════
 // ONBOARDING
 // ══════════════════════════════════════════
 let obStep=0;
-function obNext(){
-    if(obStep<3){obStep++;document.querySelectorAll('.onboard-step').forEach((s,i)=>s.classList.toggle('active',i===obStep));document.querySelectorAll('.onboard-dot').forEach((d,i)=>d.classList.toggle('active',i===obStep));if(obStep===3)$('obNextBtn').innerHTML='<i class="fas fa-rocket"></i> Começar!';}
-    else finishOnboarding();
-}
+function obNext(){if(obStep<3){obStep++;document.querySelectorAll('.onboard-step').forEach((s,i)=>s.classList.toggle('active',i===obStep));document.querySelectorAll('.onboard-dot').forEach((d,i)=>d.classList.toggle('active',i===obStep));if(obStep===3)$('obNextBtn').innerHTML='<i class="fas fa-rocket"></i> Começar!';}else finishOnboarding();}
 function finishOnboarding(){$('onboarding').classList.add('hide');setTimeout(()=>{$('onboarding').style.display='none';},500);saveData('onboardingDone',true);}
 if(loadData('onboardingDone',false)){$('onboarding').style.display='none';}
 
@@ -821,7 +799,8 @@ function showModal(title,msg,type='danger',confirmTxt='Confirmar',cancelTxt='Can
         const icons={danger:'🗑️',warning:'⚠️',info:'ℹ️',success:'✅'};
         const colors={danger:'rgba(225,112,85,.15)',warning:'rgba(253,203,110,.15)',info:'rgba(116,185,255,.15)',success:'rgba(0,184,148,.15)'};
         $('modalIcon').textContent=icons[type]||'❓';$('modalIcon').style.background=colors[type]||colors.danger;
-        $('modalTitle').textContent=title;$('modalMsg').textContent=msg;$('modalConfirm').textContent=confirmTxt;$('modalCancel').textContent=cancelTxt;
+        $('modalTitle').textContent=title;$('modalMsg').textContent=msg;
+        $('modalConfirm').textContent=confirmTxt;$('modalCancel').textContent=cancelTxt;
         const btnColors={danger:'btn-d',warning:'btn-w',info:'btn-i',success:'btn-s'};
         $('modalConfirm').className=`btn ${btnColors[type]||'btn-d'} btn-full`;
         $('modalOverlay').classList.add('open');
@@ -865,6 +844,7 @@ document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='s'){e.preventDefa
 // TIMER
 // ══════════════════════════════════════════
 let timerInterval=null,timerStart=null,timerPauseStart=null,timerPausedMs=0,timerRunning=false,timerPausado=false,timerPauses=[];
+
 function timerToggle(){
     if(!timerRunning){
         timerStart=Date.now()-timerPausedMs;timerRunning=true;timerPausado=false;timerPausedMs=0;timerPauses=[];
@@ -881,12 +861,16 @@ function timerToggle(){
         });
     }
 }
+
 function timerPause(){
     if(!timerPausado){timerPausado=true;timerPauseStart=Date.now();clearInterval(timerInterval);$('timerPauseBtn').innerHTML='<i class="fas fa-play"></i> Retomar';$('timerStatus').className='timer-status paused';$('timerStatus').innerHTML='<i class="fas fa-pause-circle"></i> Pausado';}
     else{const pd=Date.now()-timerPauseStart;timerPauses.push({inicio:timerPauseStart,duracao:pd});timerPausedMs+=pd;timerStart+=pd;timerPausado=false;$('timerPauseBtn').innerHTML='<i class="fas fa-pause"></i> Pausar';$('timerStatus').className='timer-status running';$('timerStatus').innerHTML='<i class="fas fa-circle"></i> Turno em andamento';timerInterval=setInterval(updateTimer,1000);renderPausesList();}
 }
+
 function updateTimer(){const e=Date.now()-timerStart;const h=Math.floor(e/3600000),m=Math.floor((e%3600000)/60000),s=Math.floor((e%60000)/1000);const str=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;$('timerDisplay').textContent=str;$('dashTimerTime').textContent=str;}
+
 function renderPausesList(){$('pausesList').innerHTML=timerPauses.map((p,i)=>`<div class="tag tag-b" style="margin-bottom:.3rem"><i class="fas fa-pause"></i> Pausa ${i+1}: ${Math.floor(p.duracao/60000)}min</div>`).join(' ');}
+
 async function timerStop(){
     if(!timerRunning)return;
     const ok=await showModal('Finalizar Turno','Preencher a calculadora com os horários deste turno?','success','Sim, preencher!');
@@ -897,14 +881,43 @@ async function timerStop(){
     $('timerStartBtn').innerHTML='<i class="fas fa-play"></i> Iniciar Turno';$('timerPauseBtn').disabled=true;$('timerStopBtn').disabled=true;$('dashTimerStatus').style.display='none';
     const startTime=$('timerStartDisplay').textContent,elapsed=Date.now()-timerStart;
     timerHistorico.unshift({data:hoje(),inicio:startTime,fim:endTime,duracao:elapsed,pausas:timerPauses.length,timestamp:Date.now()});
-    if(timerHistorico.length>30)timerHistorico.pop();saveData('timerHistorico',timerHistorico);
+    if(timerHistorico.length>30)timerHistorico.pop();
+    saveData('timerHistorico',timerHistorico);
     $('horaInicio').value=startTime;$('horaFim').value=endTime;$('data').value=hoje();
     renderTimerHistorico();toast('Horários preenchidos! Vá para Calcular.','success');setTimeout(()=>ir('calculadora'),1500);
 }
+
+// ══════════════════════════════════════════
+// TIMER HISTÓRICO — COM BOTÃO APAGAR ✅
+// ══════════════════════════════════════════
 function renderTimerHistorico(){
     if(!timerHistorico.length){$('timerHistCard').style.display='none';return;}
     $('timerHistCard').style.display='block';
-    $('timerHistBody').innerHTML=timerHistorico.map(t=>{const h=Math.floor(t.duracao/3600000),m=Math.floor((t.duracao%3600000)/60000);return`<tr><td>${fmtData(t.data)}</td><td>${t.inicio}</td><td>${t.fim}</td><td>${h}h${String(m).padStart(2,'0')}min</td><td>${t.pausas} pausa(s)</td></tr>`;}).join('');
+    $('timerHistBody').innerHTML=timerHistorico.map(t=>{
+        const h=Math.floor(t.duracao/3600000),m=Math.floor((t.duracao%3600000)/60000);
+        return`<tr>
+            <td>${fmtData(t.data)}</td>
+            <td>${t.inicio}</td>
+            <td>${t.fim}</td>
+            <td>${h}h${String(m).padStart(2,'0')}min</td>
+            <td>${t.pausas} pausa(s)</td>
+            <td>
+                <button class="btn btn-d btn-sm" onclick="apagarTurno(${t.timestamp})" title="Apagar este turno">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+function apagarTurno(timestamp){
+    showModal('Apagar Turno','Deseja apagar este registro do histórico de turnos?','danger','Apagar').then(ok=>{
+        if(!ok)return;
+        timerHistorico=timerHistorico.filter(t=>t.timestamp!==timestamp);
+        saveData('timerHistorico',timerHistorico);
+        renderTimerHistorico();
+        toast('Turno apagado!','success');
+    });
 }
 
 // ══════════════════════════════════════════
@@ -935,16 +948,20 @@ function initDashboard(){
     $('dashTimerStatus').style.display=timerRunning?'block':'none';
     renderDashChart();
     const ul=[...historico].slice(0,5);
-    $('dashUltimos').innerHTML=!ul.length?emptyState('inbox','Nenhum registro ainda','Toque em Calcular para começar'):ul.map(r=>`<div class="mrow" style="padding:.75rem 1.25rem"><div style="display:flex;align-items:center;gap:.75rem"><div style="min-width:80px;font-size:.8rem;font-weight:600;color:var(--text)">${fmtData(r.data)}</div>${plBadge(r.plataforma||'outro')}<span class="shift-badge ${getShiftClass(getShift(r.horaInicio))}">${getShiftLabel(getShift(r.horaInicio))}</span></div><div style="text-align:right"><div style="font-size:.85rem;font-weight:700;color:var(--secondary)">${fmt(r.valorGanho)}</div><div style="font-size:.7rem;color:var(--text-sub)">Lucro: ${fmt(r.lucroLiquido)}</div></div></div>`).join('');
+    $('dashUltimos').innerHTML=!ul.length?emptyState('Nenhum registro ainda','Toque em Calcular para começar'):ul.map(r=>`<div class="mrow" style="padding:.75rem 1.25rem"><div style="display:flex;align-items:center;gap:.75rem"><div style="min-width:80px;font-size:.8rem;font-weight:600;color:var(--text)">${fmtData(r.data)}</div>${plBadge(r.plataforma||'outro')}<span class="shift-badge ${getShiftClass(getShift(r.horaInicio))}">${getShiftLabel(getShift(r.horaInicio))}</span></div><div style="text-align:right"><div style="font-size:.85rem;font-weight:700;color:var(--secondary)">${fmt(r.valorGanho)}</div><div style="font-size:.7rem;color:var(--text-sub)">Lucro: ${fmt(r.lucroLiquido)}</div></div></div>`).join('');
 }
-function emptyState(icon,title,desc){return`<div class="empty-state"><svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="75" r="60" fill="var(--border)"/><text x="100" y="95" text-anchor="middle" font-size="50">📭</text></svg><h3>${title}</h3><p>${desc}</p></div>`;}
-function animateCounter(id,target,isCurrency){const el=$(id);if(!el)return;const duration=800,steps=30,increment=target/steps;let current=0,step=0;const timer=setInterval(()=>{step++;current=step>=steps?target:current+increment;el.textContent=isCurrency?fmt(current):current.toFixed(0);if(step>=steps)clearInterval(timer);},duration/steps);}
+
+function emptyState(title,desc){return`<div class="empty-state"><h3>${title}</h3><p>${desc}</p></div>`;}
+
+function animateCounter(id,target,isCurrency){const el=$(id);if(!el)return;const steps=30,inc=target/steps;let cur=0,s=0;const t=setInterval(()=>{s++;cur=s>=steps?target:cur+inc;el.textContent=isCurrency?fmt(cur):cur.toFixed(0);if(s>=steps)clearInterval(t);},800/steps);}
+
 function renderDashChart(){
     const ctx=$('dashChart').getContext('2d');if(dashChart)dashChart.destroy();
     const d7=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);d7.push(d.toISOString().split('T')[0]);}
     const dk=document.documentElement.classList.contains('dark');const tc=dk?'#94a3b8':'#546e8a',gc=dk?'#2d4a6e':'#e2e8f0';
     dashChart=new Chart(ctx,{type:'bar',data:{labels:d7.map(d=>fmtData(d).slice(0,5)),datasets:[{label:'Ganho',data:d7.map(d=>{const r=historico.find(h=>h.data===d);return r?parseFloat(r.valorGanho):0;}),backgroundColor:'rgba(45,90,142,0.7)',borderColor:'#2d5a8e',borderWidth:1,borderRadius:6},{label:'Lucro',data:d7.map(d=>{const r=historico.find(h=>h.data===d);return r?parseFloat(r.lucroLiquido):0;}),backgroundColor:'rgba(0,184,148,0.7)',borderColor:'#00b894',borderWidth:1,borderRadius:6}]},options:{responsive:true,plugins:{legend:{labels:{color:tc,font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc,callback:v=>fmt(v)},grid:{color:gc}}}}});
 }
+
 function plBadge(p){const m={uber:'p-uber','99':'p-99',indrive:'p-indrive',bolt:'p-bolt',outro:'p-outro'};const l={uber:'Uber','99':'99',indrive:'InDrive',bolt:'Bolt',outro:'Outro'};const ic={uber:'🚗','99':'🟡',indrive:'🟢',bolt:'⚡',outro:'🔘'};return`<span class="pbadge ${m[p]||'p-outro'}">${ic[p]||'🔘'} ${l[p]||p||'Outro'}</span>`;}
 
 // ══════════════════════════════════════════
@@ -970,6 +987,7 @@ function validarEntradas(){
     if(isNaN(ds)||ds<1||ds>7){toast('Dias deve ser entre 1 e 7.','error');return false;}
     return true;
 }
+
 function calcularGanhos(){
     const hi=$('horaInicio').value,hf=$('horaFim').value;
     const ini=new Date(`1970-01-01T${hi}`),fim=new Date(`1970-01-01T${hf}`);
@@ -983,6 +1001,7 @@ function calcularGanhos(){
     $('resDetalhes').innerHTML=`<div class="mrow"><span class="ml">Data</span><span class="mv">${fmtData($('data').value)}</span></div><div class="mrow"><span class="ml">Turno</span><span class="mv"><span class="shift-badge ${getShiftClass(turno)}">${getShiftLabel(turno)}</span></span></div><div class="mrow"><span class="ml">Horário</span><span class="mv">${hi} → ${hf} (${horas.toFixed(1)}h)</span></div><div class="mrow"><span class="ml">KM Rodado</span><span class="mv">${km.toFixed(1)} km</span></div><div class="mrow"><span class="ml">Consumo</span><span class="mv">${cons.toFixed(1)} km/L</span></div><div class="mrow"><span class="ml">Combustível</span><span class="mv">${lit.toFixed(2)} L (${fmt(cc)})</span></div><div class="mrow"><span class="ml">Aluguel</span><span class="mv">${fmt(alug)}</span></div><div class="mrow"><span class="ml">Custo Total</span><span class="mv" style="color:var(--danger)">${fmt(ct)}</span></div><div class="mrow"><span class="ml">Lucro Líquido</span><span class="mv" style="color:var(--secondary);font-size:1rem">${fmt(luc)}</span></div>`;
     $('resultCalc').style.display='block';$('salvarBtn').disabled=false;limparRascunho();
 }
+
 function salvarDados(){
     const data=$('data').value,vg=parseFloat($('valorGanho').value),hi=$('horaInicio').value,hf=$('horaFim').value;
     const km=parseFloat($('kmRodado').value),cons=parseFloat($('consumoCarro').value),alug=parseFloat($('aluguelCarro').value)||0;
@@ -993,9 +1012,13 @@ function salvarDados(){
     else{if(historico.some(r=>r.timestamp===ts)){toast('Registro para esta data já existe.','error');return false;}}
     historico.push(reg);historico.sort((a,b)=>b.timestamp-a.timestamp);saveData('historico',historico);limparFormulario();$('salvarBtn').disabled=true;toast('Dados salvos! 🎉','success');return true;
 }
+
 function limparFormulario(){['data','valorGanho','horaInicio','horaFim','kmRodado','consumoCarro','aluguelCarro','valorCombustivel'].forEach(id=>$(id).value='');$('resultCalc').style.display='none';$('data').value=hoje();limparRascunho();}
+
 function editarRegistro(ts){const r=historico.find(x=>x.timestamp===ts);if(!r)return;editandoTimestamp=ts;$('data').value=r.data;$('valorGanho').value=r.valorGanho;$('horaInicio').value=r.horaInicio;$('horaFim').value=r.horaFim;$('kmRodado').value=r.kmRodado;$('consumoCarro').value=r.consumoCarro;$('aluguelCarro').value=r.aluguelCarro;$('valorCombustivel').value=r.valorCombustivel;if(r.plataforma)$('plataforma').value=r.plataforma;$('editAlert').style.display='flex';$('salvarBtnTxt').textContent='Atualizar';$('salvarBtn').disabled=false;ir('calculadora');calcularGanhos();}
+
 function cancelarEdicao(){editandoTimestamp=null;$('editAlert').style.display='none';$('salvarBtnTxt').textContent='Salvar';$('salvarBtn').disabled=true;limparFormulario();}
+
 function compartilharWhatsApp(){const vg=$('resGanho').textContent,luc=$('resLucro').textContent,km=$('resKm').textContent,data=fmtData($('data').value);const msg=`🚗 *MotoGanhos Pro* — ${data}\n💰 Ganho: ${vg}\n📍 Por KM: ${km}\n✅ Lucro Líquido: ${luc}\n\nMotoGanhos Pro`;window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');}
 
 // ══════════════════════════════════════════
@@ -1016,17 +1039,24 @@ function atualizarHistorico(dados=null){
     const tot=d.reduce((a,r)=>{const h=calcH(r.horaInicio,r.horaFim);return{g:a.g+parseFloat(r.valorGanho),k:a.k+parseFloat(r.kmRodado),l:a.l+parseFloat(r.lucroLiquido),al:a.al+parseFloat(r.aluguelCarro),h:a.h+h,c:a.c+parseFloat(r.custoCombustivel||0),li:a.li+(parseFloat(r.kmRodado)/parseFloat(r.consumoCarro)),d:a.d+1};},{g:0,k:0,l:0,al:0,h:0,c:0,li:0,d:0});
     se.innerHTML=`<div class="card fade-up" style="margin-top:1rem"><div class="card-hdr"><i class="fas fa-chart-pie" style="color:var(--secondary)"></i><span class="card-hdr-title">Estatísticas ${dados?'do Período':'Gerais'}</span></div><div class="card-body"><div class="g4" style="margin-bottom:.85rem"><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-calendar"></i></div><div class="sl">Dias</div><div class="sv">${tot.d}</div></div><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Ganho Total</div><div class="sv">${fmt(tot.g)}</div></div><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-hand-holding-usd"></i></div><div class="sl">Lucro Total</div><div class="sv">${fmt(tot.l)}</div></div><div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-receipt"></i></div><div class="sl">Custo Total</div><div class="sv">${fmt(tot.g-tot.l)}</div></div></div><div class="g4"><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-road"></i></div><div class="sl">KM Total</div><div class="sv">${tot.k.toFixed(0)}<span style="font-size:.7rem"> km</span></div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-tachometer-alt"></i></div><div class="sl">Média/KM</div><div class="sv">${fmt(tot.g/tot.k)}</div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-clock"></i></div><div class="sl">Horas</div><div class="sv">${tot.h.toFixed(1)}<span style="font-size:.7rem"> h</span></div></div><div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-gas-pump"></i></div><div class="sl">Combustível</div><div class="sv">${fmt(tot.c)}</div><div class="ss">${tot.li.toFixed(1)} L</div></div></div></div></div>`;
 }
+
 function renderTabelaHistorico(dados){
     const c=$('histCorpo');
-    if(!dados||!dados.length){c.innerHTML=`<tr><td colspan="12">${emptyState('inbox','Nenhum registro encontrado','Adicione registros na aba Calcular')}</td></tr>`;return;}
+    if(!dados||!dados.length){c.innerHTML=`<tr><td colspan="12" style="text-align:center;padding:2rem;color:var(--text-sub)"><i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:.5rem"></i>Nenhum registro encontrado</td></tr>`;return;}
     c.innerHTML=dados.map(r=>{const h=calcH(r.horaInicio,r.horaFim),sh=getShift(r.horaInicio);return`<tr><td>${fmtData(r.data)}</td><td>${plBadge(r.plataforma||'outro')}</td><td><span class="shift-badge ${getShiftClass(sh)}">${getShiftLabel(sh).split(' ')[0]}</span></td><td style="color:var(--secondary);font-weight:600">${fmt(r.valorGanho)}</td><td>${r.horaInicio}</td><td>${r.horaFim}</td><td>${r.kmRodado} km</td><td>${fmt(parseFloat(r.valorGanho)/parseFloat(r.kmRodado))}</td><td>${fmt(parseFloat(r.valorGanho)/h)}</td><td style="color:var(--danger)">${fmt(r.custoTotal||0)}</td><td style="color:var(--secondary);font-weight:600">${fmt(r.lucroLiquido)}</td><td><div style="display:flex;gap:.3rem"><button class="btn btn-i btn-sm" onclick="editarRegistro(${r.timestamp})"><i class="fas fa-edit"></i></button><button class="btn btn-d btn-sm" onclick="apagarRegistro(${r.timestamp})"><i class="fas fa-trash"></i></button><button class="btn btn-wa btn-sm" onclick="compartilharDia(${r.timestamp})"><i class="fab fa-whatsapp"></i></button></div></td></tr>`;}).join('');
 }
+
 function compartilharDia(ts){const r=historico.find(x=>x.timestamp===ts);if(!r)return;const msg=`🚗 *MotoGanhos Pro* — ${fmtData(r.data)}\n💰 Ganho: ${fmt(r.valorGanho)}\n🛣️ KM: ${r.kmRodado} km\n✅ Lucro: ${fmt(r.lucroLiquido)}`;window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');}
+
 function renderGraficoHistorico(dados){const ctx=$('graficoGanhos').getContext('2d');if(grafico)grafico.destroy();const o=[...dados].sort((a,b)=>a.timestamp-b.timestamp);const dk=document.documentElement.classList.contains('dark');const tc=dk?'#94a3b8':'#546e8a',gc=dk?'#2d4a6e':'#e2e8f0';grafico=new Chart(ctx,{type:'bar',data:{labels:o.map(r=>fmtData(r.data).slice(0,5)),datasets:[{label:'Ganho',data:o.map(r=>parseFloat(r.valorGanho)),backgroundColor:'rgba(45,90,142,0.7)',borderColor:'#2d5a8e',borderWidth:1,borderRadius:5},{label:'Lucro',data:o.map(r=>parseFloat(r.lucroLiquido)),backgroundColor:'rgba(0,184,148,0.7)',borderColor:'#00b894',borderWidth:1,borderRadius:5},{label:'Despesas',data:o.map(r=>parseFloat(r.custoTotal||0)),backgroundColor:'rgba(225,112,85,0.6)',borderColor:'#e17055',borderWidth:1,borderRadius:5}]},options:{responsive:true,plugins:{legend:{labels:{color:tc,font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc,callback:v=>fmt(v)},grid:{color:gc}}}}});}
+
 function filtrarHistorico(){const vi=$('filtroInicio').value,vf=$('filtroFim').value;if(!vi||!vf){toast('Preencha as duas datas.','warning');return;}const ini=parseLocal(vi),fim=parseLocal(vf);if(ini>fim){toast('Data início maior que fim.','error');return;}atualizarHistorico(historico.filter(r=>{const d=parseLocal(r.data);return d>=ini&&d<=fim;}));}
 function limparFiltro(){$('filtroInicio').value='';$('filtroFim').value='';atualizarHistorico();}
+
 function exportarCSV(){if(!historico.length){toast('Sem dados.','warning');return;}const h=['Data','Plataforma','Turno','Ganho','Início','Fim','KM','KM/L','Aluguel','Combustível','CustoTotal','LucroLíquido'];const l=historico.map(r=>[r.data,r.plataforma||'',r.turno||'',r.valorGanho,r.horaInicio,r.horaFim,r.kmRodado,r.consumoCarro,r.aluguelCarro,r.valorCombustivel,r.custoTotal,r.lucroLiquido].join(';'));const b=new Blob(['\uFEFF'+[h.join(';'),...l].join('\n')],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`motoganhos_${hoje()}.csv`;a.click();toast('CSV exportado!','success');}
+
 function exportarBackup(){if(!historico.length){toast('Sem dados.','warning');return;}const b=new Blob([JSON.stringify({historico,abastecimentos,manutencoes,metas,despesas,agenda},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`backup_${hoje()}.json`;a.click();toast('Backup exportado!','success');}
+
 function importarBackup(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);showModal('Importar Backup','Os dados atuais serão substituídos. Continuar?','warning','Importar').then(ok=>{if(!ok)return;if(d.historico&&Array.isArray(d.historico)){historico=d.historico.filter(validarRegistro);saveData('historico',historico);}if(d.abastecimentos){abastecimentos=d.abastecimentos;saveData('abastecimentos',abastecimentos);}if(d.manutencoes){manutencoes=d.manutencoes;saveData('manutencoes',manutencoes);}if(d.metas){metas=d.metas;saveData('metas',metas);}if(d.despesas){despesas=d.despesas;saveData('despesas',despesas);}if(d.agenda){agenda=d.agenda;saveData('agenda',agenda);}toast('Backup restaurado!','success');atualizarHistorico();});}catch{toast('Erro ao ler o arquivo.','error');}};r.readAsText(f);input.value='';}
 
 // ══════════════════════════════════════════
@@ -1057,6 +1087,7 @@ function calcularEstimativas(){
     $('valorKm').textContent=fmt(br/km);$('valorHora').textContent=fmt(br/h);$('totalDespesas').textContent=fmt(td);$('valorBruto').textContent=fmt(br);$('lucroLiquidoEst').textContent=fmt(luc);$('lucroSemanal').textContent=`${fmt(luc*ds)} (${ds} dias)`;
     $('resultadoEstimativas').style.display='block';renderForecast();
 }
+
 function renderForecast(){
     if(historico.length<5){$('forecastCard').style.display='none';return;}
     $('forecastCard').style.display='block';
@@ -1064,7 +1095,7 @@ function renderForecast(){
     const mg=ul.reduce((a,r)=>a+parseFloat(r.valorGanho),0)/ul.length;
     const ml=ul.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0)/ul.length;
     const mk=ul.reduce((a,r)=>a+parseFloat(r.kmRodado),0)/ul.length;
-    const diasMes=new Date().getDate(),diasRest=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate()-diasMes;
+    const diasRest=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate()-new Date().getDate();
     const ms=mesAtual(),dt=historico.filter(r=>r.data.startsWith(ms)).length;
     const lm=historico.filter(r=>r.data.startsWith(ms)).reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);
     const proj=dt>0?(lm/dt)*new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate():0;
@@ -1075,6 +1106,7 @@ function renderForecast(){
 // METAS
 // ══════════════════════════════════════════
 function salvarMetas(){metas={diaria:parseFloat($('metaDiaria').value)||0,semanal:parseFloat($('metaSemanal').value)||0,mensal:parseFloat($('metaMensal').value)||0};saveData('metas',metas);renderMetas();toast('Metas salvas!','success');}
+
 function renderMetas(){
     if(metas.diaria)$('metaDiaria').value=metas.diaria;if(metas.semanal)$('metaSemanal').value=metas.semanal;if(metas.mensal)$('metaMensal').value=metas.mensal;
     const hs=hoje(),ms=mesAtual(),sa=new Date();sa.setDate(sa.getDate()-6);
@@ -1098,8 +1130,9 @@ function salvarAbastecimento(){
     abastecimentos.push({id:Date.now(),data,km:km.toFixed(0),litros:lit.toFixed(2),preco:preco.toFixed(3),total:total.toFixed(2),consumoReal:cr,posto,tipo});
     saveData('abastecimentos',abastecimentos);$('abastForm').reset();$('abastData').value=hoje();renderAbastecimentos();renderAbastChart();toast('Abastecimento registrado!','success');
 }
+
 function renderAbastecimentos(){
-    if(!abastecimentos.length){$('abastCorpo').innerHTML=`<tr><td colspan="8">${emptyState('gas-pump','Nenhum abastecimento','Registre seu primeiro abastecimento acima')}</td></tr>`;$('abastResumo').innerHTML='';return;}
+    if(!abastecimentos.length){$('abastCorpo').innerHTML=`<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--text-sub)"><i class="fas fa-gas-pump" style="font-size:2rem;display:block;margin-bottom:.5rem"></i>Nenhum abastecimento registrado</td></tr>`;$('abastResumo').innerHTML='';return;}
     const s=[...abastecimentos].sort((a,b)=>new Date(b.data)-new Date(a.data));
     const ti={gasolina:'⛽',gasolinaA:'⛽',etanol:'🌿',gnv:'💧',diesel:'🔵'};
     $('abastCorpo').innerHTML=s.map(a=>`<tr><td>${fmtData(a.data)}</td><td>${ti[a.tipo]||'⛽'} ${a.tipo||'--'}</td><td>${Number(a.km).toLocaleString('pt-BR')} km</td><td>${a.litros} L</td><td>${fmt(a.preco)}</td><td style="font-weight:600;color:var(--danger)">${fmt(a.total)}</td><td>${a.consumoReal?`<span class="tag tag-g">${a.consumoReal} km/L</span>`:'<span style="color:var(--text-sub);font-size:.75rem">1º reg.</span>'}</td><td><button class="btn btn-d btn-sm" onclick="apagarAbast(${a.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('');
@@ -1107,6 +1140,7 @@ function renderAbastecimentos(){
     const cn=abastecimentos.filter(a=>a.consumoReal).map(a=>parseFloat(a.consumoReal)),mc=cn.length?cn.reduce((a,b)=>a+b,0)/cn.length:0;
     $('abastResumo').innerHTML=`<div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Total Gasto</div><div class="sv">${fmt(tg)}</div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-flask"></i></div><div class="sl">Total Litros</div><div class="sv">${tl.toFixed(1)}<span style="font-size:.7rem"> L</span></div></div><div class="scard y"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger)"><i class="fas fa-tag"></i></div><div class="sl">Preço Médio</div><div class="sv">${fmt(tg/tl)}<span style="font-size:.65rem">/L</span></div></div>${mc>0?`<div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-tachometer-alt"></i></div><div class="sl">Consumo Médio</div><div class="sv">${mc.toFixed(1)}<span style="font-size:.65rem"> km/L</span></div></div>`:'<div></div>'}`;
 }
+
 function renderAbastChart(){
     if(abastecimentos.length<2)return;
     const s=[...abastecimentos].sort((a,b)=>new Date(a.data)-new Date(b.data)).slice(-15);
@@ -1114,38 +1148,46 @@ function renderAbastChart(){
     const dk=document.documentElement.classList.contains('dark'),tc=dk?'#94a3b8':'#546e8a',gc=dk?'#2d4a6e':'#e2e8f0';
     abastChartInst=new Chart(ctx,{type:'line',data:{labels:s.map(a=>fmtData(a.data).slice(0,5)),datasets:[{label:'R$/Litro',data:s.map(a=>parseFloat(a.preco)),borderColor:'#e17055',backgroundColor:'rgba(225,112,85,.1)',fill:true,tension:.4,pointRadius:4}]},options:{responsive:true,plugins:{legend:{labels:{color:tc}},tooltip:{callbacks:{label:c=>`R$ ${c.raw}/L`}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc,callback:v=>`R$ ${v}`},grid:{color:gc}}}}});
 }
+
 function apagarAbast(id){showModal('Apagar Abastecimento','Deseja apagar este registro?','danger').then(ok=>{if(ok){abastecimentos=abastecimentos.filter(a=>a.id!==id);saveData('abastecimentos',abastecimentos);renderAbastecimentos();renderAbastChart();toast('Apagado.','success');}});}
 
 // ══════════════════════════════════════════
 // MANUTENÇÃO
 // ══════════════════════════════════════════
 const mtTipos={oleo:'🔧 Troca de Óleo',pneu:'🔄 Pneus',freio:'🛑 Freios',revisao:'🔩 Revisão Geral',filtro:'🌬️ Filtros',bateria:'🔋 Bateria',outro:'🔧 Outro'};
+
 function salvarManutencao(){const data=$('manutData').value,tipo=$('manutTipo').value,km=parseFloat($('manutKm').value),custo=parseFloat($('manutCusto').value)||0,pk=parseFloat($('manutProxKm').value)||null,desc=$('manutDesc').value;if(!data||!tipo||isNaN(km)){toast('Preencha os campos obrigatórios.','error');return;}manutencoes.push({id:Date.now(),data,tipo,km:km.toFixed(0),custo:custo.toFixed(2),proxKm:pk,desc});saveData('manutencoes',manutencoes);$('manutForm').reset();$('manutData').value=hoje();renderManutencoes();toast('Manutenção registrada!','success');}
+
 function renderManutencoes(){
     const kma=historico.length>0?parseFloat(historico[0].kmRodado)||0:0;
     const al=manutencoes.filter(m=>m.proxKm&&kma>0&&(parseFloat(m.proxKm)-kma)<=1000);
     $('manutAlertas').innerHTML=al.map(m=>{const df=parseFloat(m.proxKm)-kma,vn=df<=0;return`<div class="maint-alert"><i class="fas fa-exclamation-triangle" style="color:${vn?'var(--danger)':'var(--warning)'}"></i><div style="font-size:.82rem"><strong>${mtTipos[m.tipo]||m.tipo}</strong>: ${vn?`<span style="color:var(--danger)">Revisão atrasada! Passou ${Math.abs(df).toFixed(0)} km</span>`:`Próxima em <strong>${df.toFixed(0)} km</strong>`}</div></div>`;}).join('');
-    if(!manutencoes.length){$('manutCorpo').innerHTML=`<tr><td colspan="7">${emptyState('wrench','Nenhuma manutenção','Registre a primeira manutenção acima')}</td></tr>`;return;}
+    if(!manutencoes.length){$('manutCorpo').innerHTML=`<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-sub)"><i class="fas fa-wrench" style="font-size:2rem;display:block;margin-bottom:.5rem"></i>Nenhuma manutenção registrada</td></tr>`;return;}
     const s=[...manutencoes].sort((a,b)=>new Date(b.data)-new Date(a.data));
     $('manutCorpo').innerHTML=s.map(m=>`<tr><td>${fmtData(m.data)}</td><td>${mtTipos[m.tipo]||m.tipo}</td><td>${Number(m.km).toLocaleString('pt-BR')} km</td><td style="color:var(--danger);font-weight:600">${fmt(m.custo)}</td><td>${m.proxKm?`${Number(m.proxKm).toLocaleString('pt-BR')} km`:'--'}</td><td style="color:var(--text-sub);font-size:.78rem">${m.desc||'--'}</td><td><button class="btn btn-d btn-sm" onclick="apagarManut(${m.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('');
 }
+
 function apagarManut(id){showModal('Apagar Manutenção','Deseja apagar?','danger').then(ok=>{if(ok){manutencoes=manutencoes.filter(m=>m.id!==id);saveData('manutencoes',manutencoes);renderManutencoes();toast('Apagada.','success');}});}
 
 // ══════════════════════════════════════════
 // DESPESAS
 // ══════════════════════════════════════════
 const despCats={pedagio:'🛣️ Pedágio',multa:'🚨 Multa',lavagem:'🚿 Lavagem',alimentacao:'🍔 Alimentação',estacionamento:'🅿️ Estacionamento',seguro:'🛡️ Seguro',ipva:'📄 IPVA',app:'📱 Taxa de App',outro:'💸 Outro'};
+
 function salvarDespesa(){const data=$('despData').value,cat=$('despCategoria').value,val=parseFloat($('despValor').value),desc=$('despDesc').value;if(!data||isNaN(val)||val<=0){toast('Preencha todos os campos.','error');return;}despesas.push({id:Date.now(),data,categoria:cat,valor:val.toFixed(2),desc});saveData('despesas',despesas);$('despForm').reset();$('despData').value=hoje();renderDespesas();renderDespResumo();toast('Despesa registrada!','success');}
+
 function renderDespesas(){
     const fm=$('despFiltroMes').value;
     const md=[...new Set(despesas.map(d=>d.data.slice(0,7)))].sort().reverse();
     const sel=$('despFiltroMes'),cur=sel.value;sel.innerHTML='<option value="">Todos os meses</option>'+md.map(m=>`<option value="${m}">${m}</option>`).join('');sel.value=cur||'';
     const filtered=fm?despesas.filter(d=>d.data.startsWith(fm)):despesas;
-    if(!filtered.length){$('despCorpo').innerHTML=`<tr><td colspan="5">${emptyState('wallet','Nenhuma despesa','Registre suas despesas extras acima')}</td></tr>`;return;}
+    if(!filtered.length){$('despCorpo').innerHTML=`<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-sub)"><i class="fas fa-wallet" style="font-size:2rem;display:block;margin-bottom:.5rem"></i>Nenhuma despesa registrada</td></tr>`;return;}
     const s=[...filtered].sort((a,b)=>new Date(b.data)-new Date(a.data));
     $('despCorpo').innerHTML=s.map(d=>`<tr><td>${fmtData(d.data)}</td><td>${despCats[d.categoria]||d.categoria}</td><td style="color:var(--danger);font-weight:600">${fmt(d.valor)}</td><td style="color:var(--text-sub);font-size:.78rem">${d.desc||'--'}</td><td><button class="btn btn-d btn-sm" onclick="apagarDespesa(${d.id})"><i class="fas fa-trash"></i></button></td></tr>`).join('');
 }
+
 function renderDespResumo(){if(!despesas.length){$('despResumo').innerHTML='';return;}const ms=mesAtual(),me=despesas.filter(d=>d.data.startsWith(ms)),total=despesas.reduce((a,d)=>a+parseFloat(d.valor),0),totalMes=me.reduce((a,d)=>a+parseFloat(d.valor),0);const cats={};despesas.forEach(d=>{cats[d.categoria]=(cats[d.categoria]||0)+parseFloat(d.valor);});const tc=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0];$('despResumo').innerHTML=`<div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Total Geral</div><div class="sv">${fmt(total)}</div></div><div class="scard y"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger)"><i class="fas fa-calendar-alt"></i></div><div class="sl">Este Mês</div><div class="sv">${fmt(totalMes)}</div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-tag"></i></div><div class="sl">Maior Categoria</div><div class="sv" style="font-size:.85rem">${despCats[tc?.[0]]?.split(' ')[0]||'--'}</div></div><div class="scard p"><div class="si" style="background:rgba(162,155,254,.12);color:var(--purple)"><i class="fas fa-list"></i></div><div class="sl">Registros</div><div class="sv">${despesas.length}</div></div>`;}
+
 function apagarDespesa(id){showModal('Apagar Despesa','Deseja apagar esta despesa?','danger').then(ok=>{if(!ok)return;undoBuffer={type:'despesa',data:[...despesas]};despesas=despesas.filter(d=>d.id!==id);saveData('despesas',despesas);renderDespesas();renderDespResumo();toastWithUndo('Despesa apagada.');});}
 
 // ══════════════════════════════════════════
@@ -1164,6 +1206,7 @@ function renderImpostos(){
 // ══════════════════════════════════════════
 let agendaMesAtual=new Date();
 function agendaNavMes(dir){agendaMesAtual=new Date(agendaMesAtual.getFullYear(),agendaMesAtual.getMonth()+dir,1);renderAgenda();}
+
 function renderAgenda(){
     const ano=agendaMesAtual.getFullYear(),mes=agendaMesAtual.getMonth();
     const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
@@ -1176,13 +1219,14 @@ function renderAgenda(){
     let html=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:.3rem;text-align:center">`;
     dias.forEach(d=>html+=`<div style="font-size:.65rem;font-weight:700;color:var(--text-sub);padding:.3rem">${d}</div>`);
     for(let i=0;i<pDia;i++)html+=`<div></div>`;
-    for(let d=1;d<=diasMes;d++){const ds=`${mesStr}-${String(d).padStart(2,'0')}`,tr=dt.has(ds),pld=pl.includes(d),ih=ds===hoje(),reg=historico.find(r=>r.data===ds);let bg='transparent',color='var(--text)',border='1px solid var(--border)';if(tr){bg='var(--secondary)';color='#fff';border='none';}else if(pld){bg='rgba(0,184,148,.1)';border='1px solid var(--secondary)';}html+=`<div onclick="agendaClickDia(${d},'${mesStr}')" style="padding:.4rem .2rem;border-radius:8px;cursor:pointer;background:${bg};color:${color};border:${border};font-size:.8rem;font-weight:${ih?800:500};transition:all .2s;${ih?'box-shadow:0 0 0 2px var(--secondary)':''}" title="${reg?`Lucro: ${fmt(reg.lucroLiquido)}`:''}"> ${d}${reg?`<div style="font-size:.45rem;margin-top:.1rem">${fmt(reg.lucroLiquido).replace('R$','')}</div>`:''}</div>`;}
+    for(let d=1;d<=diasMes;d++){const ds=`${mesStr}-${String(d).padStart(2,'0')}`,tr=dt.has(ds),pld=pl.includes(d),ih=ds===hoje(),reg=historico.find(r=>r.data===ds);let bg='transparent',color='var(--text)',border='1px solid var(--border)';if(tr){bg='var(--secondary)';color='#fff';border='none';}else if(pld){bg='rgba(0,184,148,.1)';border='1px solid var(--secondary)';}html+=`<div onclick="agendaClickDia(${d},'${mesStr}')" style="padding:.4rem .2rem;border-radius:8px;cursor:pointer;background:${bg};color:${color};border:${border};font-size:.8rem;font-weight:${ih?800:500};transition:all .2s;${ih?'box-shadow:0 0 0 2px var(--secondary)':''}" title="${reg?`Lucro: ${fmt(reg.lucroLiquido)}`:''}">${d}${reg?`<div style="font-size:.45rem;margin-top:.1rem">${fmt(reg.lucroLiquido).replace('R$','')}</div>`:''}</div>`;}
     html+='</div>';$('agendaCalendario').innerHTML=html;
     const tr=dt.size,lm=historico.filter(r=>r.data.startsWith(mesStr)).reduce((a,r)=>a+parseFloat(r.lucroLiquido),0),md=tr>0?lm/tr:0;
     $('agendaStats').innerHTML=`<div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-calendar-check"></i></div><div class="sl">Dias Trabalhados</div><div class="sv">${tr}</div></div><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Lucro do Mês</div><div class="sv">${fmt(lm)}</div></div><div class="scard y"><div class="si" style="background:rgba(253,203,110,.12);color:var(--danger)"><i class="fas fa-chart-line"></i></div><div class="sl">Média por Dia</div><div class="sv">${fmt(md)}</div></div>`;
     const semana=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
     $('agendaSemana').innerHTML=semana.map((d,i)=>{const p=(agenda[mesStr+'_semana']||[]).includes(i);return`<div onclick="toggleDiaSemana(${i},'${mesStr}')" style="padding:.6rem 1rem;border-radius:10px;cursor:pointer;font-size:.82rem;font-weight:600;background:${p?'var(--secondary)':'var(--bg)'};color:${p?'#fff':'var(--text-sub)'};border:2px solid ${p?'var(--secondary)':'var(--border)'};transition:all .2s">${d}</div>`;}).join('');
 }
+
 function agendaClickDia(d,mesStr){const ds=`${mesStr}-${String(d).padStart(2,'0')}`,reg=historico.find(r=>r.data===ds);if(reg){toast(`${fmtData(ds)}: Lucro ${fmt(reg.lucroLiquido)}`,'info');return;}const pl=agenda[mesStr]||[];const idx=pl.indexOf(d);if(idx===-1)pl.push(d);else pl.splice(idx,1);agenda[mesStr]=pl;saveData('agenda',agenda);renderAgenda();}
 function toggleDiaSemana(i,mesStr){const key=mesStr+'_semana',pl=agenda[key]||[];const idx=pl.indexOf(i);if(idx===-1)pl.push(i);else pl.splice(idx,1);agenda[key]=pl;saveData('agenda',agenda);renderAgenda();}
 function salvarAgenda(){saveData('agenda',agenda);toast('Planejamento salvo!','success');}
@@ -1202,6 +1246,7 @@ function gerarRelatorio(){
     const sd={manha:{g:0,l:0,c:0},tarde:{g:0,l:0,c:0},noite:{g:0,l:0,c:0}};rg.forEach(r=>{const s=r.turno||getShift(r.horaInicio);sd[s].g+=parseFloat(r.valorGanho);sd[s].l+=parseFloat(r.lucroLiquido);sd[s].c++;});
     $('resultadoRelatorio').innerHTML=`<div class="card" style="margin-bottom:1rem"><div class="card-hdr" style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e);border-radius:16px 16px 0 0"><i class="fas fa-file-alt" style="color:#00b894"></i><span class="card-hdr-title" style="color:#fff">Relatório de ${titulo}</span></div><div class="card-body"><div class="g4" style="margin-bottom:1rem"><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-calendar"></i></div><div class="sl">Dias</div><div class="sv">${rg.length}</div></div><div class="scard b"><div class="si" style="background:rgba(45,90,142,.1);color:var(--primary-l)"><i class="fas fa-dollar-sign"></i></div><div class="sl">Faturamento</div><div class="sv">${fmt(gt)}</div></div><div class="scard r"><div class="si" style="background:rgba(225,112,85,.1);color:var(--danger)"><i class="fas fa-receipt"></i></div><div class="sl">Despesas</div><div class="sv">${fmt(ct+ca+cm+cd)}</div></div><div class="scard g"><div class="si" style="background:rgba(0,184,148,.12);color:var(--secondary)"><i class="fas fa-hand-holding-usd"></i></div><div class="sl">Lucro</div><div class="sv">${fmt(lt)}</div></div></div><hr class="div"><div class="g2"><div><div style="font-size:.72rem;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:.65rem">Médias</div><div class="mrow"><span class="ml">Ganho médio/dia</span><span class="mv">${fmt(gt/rg.length)}</span></div><div class="mrow"><span class="ml">Lucro médio/dia</span><span class="mv" style="color:var(--secondary)">${fmt(lt/rg.length)}</span></div><div class="mrow"><span class="ml">Média por KM</span><span class="mv">${fmt(gt/kt)}</span></div><div class="mrow"><span class="ml">KM total</span><span class="mv">${kt.toFixed(0)} km</span></div><div class="mrow"><span class="ml">Horas trabalhadas</span><span class="mv">${ht.toFixed(1)} h</span></div></div><div><div style="font-size:.72rem;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:.65rem">Destaques</div><div class="mrow"><span class="ml">🏆 Melhor dia</span><span class="mv" style="color:var(--secondary)">${fmtData(mb.data)} (${fmt(mb.lucroLiquido)})</span></div><div class="mrow"><span class="ml">📉 Pior dia</span><span class="mv" style="color:var(--danger)">${fmtData(mp.data)} (${fmt(mp.lucroLiquido)})</span></div>${ca>0?`<div class="mrow"><span class="ml">⛽ Combustível</span><span class="mv" style="color:var(--danger)">${fmt(ca)}</span></div>`:''}${cm>0?`<div class="mrow"><span class="ml">🔧 Manutenções</span><span class="mv" style="color:var(--danger)">${fmt(cm)}</span></div>`:''}${cd>0?`<div class="mrow"><span class="ml">💸 Despesas Extras</span><span class="mv" style="color:var(--danger)">${fmt(cd)}</span></div>`:''}</div></div><hr class="div"><div style="font-size:.72rem;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:.65rem">Por Turno</div><div class="g3">${Object.entries(sd).map(([s,v])=>`<div class="scard"><div class="shift-badge ${getShiftClass(s)}" style="margin-bottom:.5rem">${getShiftLabel(s)}</div><div class="sl">${v.c} dias</div><div class="sv">${v.c>0?fmt(v.g/v.c):'--'}</div><div class="ss">média/dia</div></div>`).join('')}</div>${Object.keys(pl).length>1?`<hr class="div"><div style="display:flex;flex-wrap:wrap;gap:.5rem">${Object.entries(pl).map(([p,v])=>`<div style="display:flex;align-items:center;gap:.45rem;padding:.5rem .85rem;background:var(--bg);border-radius:10px">${plBadge(p)}<span style="font-weight:700;font-size:.85rem">${fmt(v)}</span></div>`).join('')}</div>`:''}</div></div><div class="card"><div class="card-hdr"><i class="fas fa-list" style="color:var(--info)"></i><span class="card-hdr-title">Todos os Dias</span></div><div style="overflow-x:auto"><table class="dtable"><thead><tr><th>Data</th><th>Plataforma</th><th>Turno</th><th>Ganho</th><th>KM</th><th>Custo</th><th>Lucro</th></tr></thead><tbody>${rg.map(r=>`<tr><td>${fmtData(r.data)}</td><td>${plBadge(r.plataforma||'outro')}</td><td><span class="shift-badge ${getShiftClass(r.turno||getShift(r.horaInicio))}">${getShiftLabel(r.turno||getShift(r.horaInicio)).split(' ')[0]}</span></td><td style="color:var(--secondary);font-weight:600">${fmt(r.valorGanho)}</td><td>${r.kmRodado} km</td><td style="color:var(--danger)">${fmt(r.custoTotal||0)}</td><td style="color:var(--secondary);font-weight:600">${fmt(r.lucroLiquido)}</td></tr>`).join('')}</tbody></table></div></div>`;
 }
+
 function compartilharRelatorioWA(){const mes=$('relMes').value;if(!mes){toast('Gere o relatório primeiro.','warning');return;}const rg=historico.filter(r=>r.data.startsWith(mes));if(!rg.length){toast('Sem dados.','warning');return;}const gt=rg.reduce((a,r)=>a+parseFloat(r.valorGanho),0),lt=rg.reduce((a,r)=>a+parseFloat(r.lucroLiquido),0);const [ano,mesN]=mes.split('-'),mn=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];const msg=`🚗 *MotoGanhos Pro — ${mn[parseInt(mesN)-1]}/${ano}*\n\n📅 Dias: ${rg.length}\n💰 Faturamento: ${fmt(gt)}\n✅ Lucro Líquido: ${fmt(lt)}\n📊 Média/dia: ${fmt(lt/rg.length)}\n\nMotoGanhos Pro`;window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');}
 
 // ══════════════════════════════════════════
